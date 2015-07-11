@@ -7,8 +7,14 @@ an economy down to the physical sustenance level.
 ## Design
 A more complete, and regularly updated, description of the game design can be found [here](http://localhost/d).
 
-## Current Release: 0.1.0
-The current release features 
+## Developing Release: 0.1.0
+The currently developing release will feature:
+- Controllable Civilians
+- Birthrate and an individual "Deathrate"
+- Food and Wood Gathering
+- Ticking Costs (each Civilian/Unit consumes one food per unit time)
+- Pseudo-Random Terrain Generation with Desert, Plains, and Forest tiles using my quick and dirty Cluster Seeder v1
+- Isometric Map
 
 ## Contributors
 - [Philip Enders](linkedin.com)
