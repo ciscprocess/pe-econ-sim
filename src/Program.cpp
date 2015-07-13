@@ -16,6 +16,8 @@ bool Program::run(int tick) {
     sprite.setPosition(0, 0);
     window->draw(sprite);
 
+
+    //sf::sleep(sf::milliseconds(100));
     return true;
 }
 

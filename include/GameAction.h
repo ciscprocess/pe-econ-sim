@@ -7,15 +7,15 @@
 
 #include <functional>
 
-#include "GameState.h"
+
 class GameState;
 class GameAction {
 public:
     GameAction(std::function<bool (GameState*)> tickAction, int turns = -1);
 
-    bool tick(GameState* statee) {
+    bool tick(GameState* state) {
 
-        return --turns != 0 && tickAction(statee);
+        return --turns != 0 && tickAction(state);
     }
 private:
     int turns;

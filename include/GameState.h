@@ -10,6 +10,7 @@
 #include "CellularBoard.h"
 #include "Unit.h"
 #include "GameAction.h"
+#include "GameActionQueue.h"
 
 class GameAction;
 class GameStateSeeder;
@@ -23,7 +24,9 @@ public:
         return board;
     }
 
-    void addAction(GameAction& action) { actions.push_back(action); };
+    void queueAction(GameAction& action, void* key = nullptr);
+    void putAction(GameAction& action, void* key);
+
     void selectUnit(Unit* unit) {
         selectedUnit = unit;
     };
@@ -31,7 +34,7 @@ public:
     std::vector<Unit*> units;
     Unit* selectedUnit;
 private:
-    std::vector<GameAction> actions;
+    std::map<void*, GameActionQueue> actions;
     CellularBoard* board;
 
 };
