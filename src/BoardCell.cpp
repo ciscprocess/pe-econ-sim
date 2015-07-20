@@ -4,6 +4,6 @@
 
 #include "BoardCell.h"
 
-BoardCell::BoardCell() {
-
+BoardCell::BoardCell(sf::Color baseColor) : baseColor(baseColor) {
+    type = TYPE::Undef;
 }

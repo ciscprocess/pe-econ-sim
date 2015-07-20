@@ -59,19 +59,32 @@ void ClusterSeederV1::seedTerrain(GameState *state) {
 
     for (int i = 0; i < fcc; i++)
     {
-        int cw = rand() % 5 + 3;
-        int ch = rand() % 5 + 3;
-        int tu = rand() % (width - cw);
-        int tv = rand() % (height - ch);
+        int choice = rand();
+        if (choice % 2 == 7) {
+            int cw = rand() % 5 + 3;
+            int ch = rand() % 5 + 3;
+            int tu = rand() % (width - cw);
+            int tv = rand() % (height - ch);
 
-        for (int u = tu; u < tu + cw; u++)
-        {
-            for (int v = tv; v < tv + ch; v++)
+            for (int u = tu; u < tu + cw; u++)
             {
-                if (dis(gen) < 0.8)
-                    board->setCell(u, v, ForestCell());
+                for (int v = tv; v < tv + ch; v++)
+                {
+                    if (dis(gen) < 0.8)
+                        board->setCell(u, v, ForestCell());
+                }
+            }
+        } else {
+            int cw = rand() % 5 + 3;
+            int tu = rand() % (width - cw);
+            int tv = rand() % (height - cw);
+
+            for (int u = tu; u <= tu + cw; u++) {
+                board->setCell(u, u, ForestCell());
+                board->setCell(u, (tu + cw) - (u - tu), ForestCell());
             }
         }
+
     }
 
     // propagate the desert and forest terrains

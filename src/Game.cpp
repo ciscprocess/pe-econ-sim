@@ -7,6 +7,7 @@
 
 #include <EventManager.h>
 #include <ClickAtCoordinate.h>
+#include <ClusterSeederV2.h>
 
 using sf::Vector3f;
 
@@ -52,7 +53,7 @@ bool Game::run() {
 }
 
 Game::Game(sf::RenderTarget* target) : target(target) {
-    ClusterSeederV1 seeder = ClusterSeederV1();
+    ClusterSeederV2 seeder = ClusterSeederV2();
 
     gameView = sf::View(sf::Vector2f(1888, -100), sf::Vector2f(1024, 768));
     gameView.zoom(3.5);
@@ -66,6 +67,7 @@ Game::Game(sf::RenderTarget* target) : target(target) {
 }
 
 void Game::nativeEventHandler(sf::Event event) {
+    // TODO: all this game event logic should be factored out into another, subtyped, class
     if (event.type == sf::Event::MouseMoved) {
         sf::Vector2f mapCoords = target->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
         visualizer->setInputPosition(mapCoords);
@@ -88,20 +90,8 @@ void Game::nativeEventHandler(sf::Event event) {
         } else if (event.mouseButton.button == sf::Mouse::Button::Left) {
             sf::Vector2f mapCoords = target->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 
-            bool found = false;
-            for (int i = 0; i < visualizer->sprites.size(); i++) {
-                sf::Sprite sprite = visualizer->sprites[i].first;
-                if (sprite.getGlobalBounds().contains(mapCoords)) {
-                    Unit* unit = visualizer->sprites[i].second;
-                    state->selectUnit(unit);
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                state->selectedUnit = nullptr;
-            }
+            Unit* focusedUnit = visualizer->findUnitAtLocation(mapCoords);
+            state->selectUnit(focusedUnit);
 
             sf::Transform transform = visualizer->getTransform().getInverse();
             sf::Vector2f point = transform.transformPoint(mapCoords);
@@ -121,7 +111,7 @@ void Game::nativeEventHandler(sf::Event event) {
         }
     } else if (event.type == sf::Event::MouseWheelScrolled) {
         if (event.mouseWheelScroll.delta > 0) gameView.zoom(0.9);
-        else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1/0.9);
+        else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.9);
     }
 }
 

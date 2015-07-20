@@ -56,3 +56,16 @@ void IsometricSceneVisualizer::draw(GameState *state) {
         target->draw(sprite);
     }
 }
+
+Unit *IsometricSceneVisualizer::findUnitAtLocation(sf::Vector2f location) {
+    Unit* found = nullptr;
+    for (int i = 0; i < this->sprites.size(); i++) {
+        sf::Sprite sprite = this->sprites[i].first;
+        if (sprite.getGlobalBounds().contains(location)) {
+            found = this->sprites[i].second;
+            break;
+        }
+    }
+
+    return found;
+}

@@ -10,7 +10,7 @@
 
 class BoardCell {
 public:
-    BoardCell();
+    BoardCell(sf::Color baseColor = sf::Color::White);
     enum TYPE { Plains, Desert, Forest, Water, Undef };
 
     TYPE getType() { return type; }

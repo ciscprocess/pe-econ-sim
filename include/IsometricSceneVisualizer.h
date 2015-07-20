@@ -32,6 +32,8 @@ public:
 
     std::vector<std::pair<sf::Sprite, Unit*> > sprites;
 
+    Unit* findUnitAtLocation(sf::Vector2f);
+
 private:
     Vector3f uBasis, vBasis;
     Transform Sux;

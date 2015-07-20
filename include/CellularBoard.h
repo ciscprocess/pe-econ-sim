@@ -29,6 +29,8 @@ public:
 private:
     boost::multi_array<BoardCell, 2>* grid;
     int width, height;
+
+    void generateAdjacencyGraph();
 };
 
 
