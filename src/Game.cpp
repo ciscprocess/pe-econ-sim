@@ -111,7 +111,7 @@ void Game::nativeEventHandler(sf::Event event) {
         }
     } else if (event.type == sf::Event::MouseWheelScrolled) {
         if (event.mouseWheelScroll.delta > 0) gameView.zoom(0.9);
-        else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.9);
+        else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.9f);
     }
 }
 

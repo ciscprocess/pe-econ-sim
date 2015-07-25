@@ -21,9 +21,8 @@ public:
     public:
        AnchorPoint(sf::Vector2f);
         double getComponent(sf::Vector2f point);
-    private:
-        double maximumComponent;
         sf::Vector2f location;
+    private:
         std::vector<std::pair<double, double>> sizesAndPhases;
 
         double func(double theta);

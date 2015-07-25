@@ -11,7 +11,7 @@ class CellularBoard {
 public:
     CellularBoard(int width, int height);
 
-    BoardCell getCell(int u, int v) { return ((*grid)[v][u]); };
+    BoardCell& getCell(int u, int v) { return ((*grid)[v][u]); };
     void setCell(int u, int v, BoardCell cell) {
         (*grid)[v][u] = cell;
     };
