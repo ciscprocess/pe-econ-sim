@@ -32,16 +32,18 @@ GameAction generatePathingAction( sf::Vector2i end, Unit* unit, int speed = 1) {
 bool Game::run() {
     state->tick();
     visualizer->draw(state);
-    target->setView(gameView);
+    //(*target)->setView(gameView);
     return false;
 }
 
-Game::Game(sf::RenderTarget* target) : target(target) {
+Game::Game(sf::RenderTarget** target) : target(target) {
     ClusterSeederV2 seeder = ClusterSeederV2();
+    sf::Vector2u size = (*target)->getSize();
 
-    gameView = sf::View(sf::Vector2f(1888, -100), sf::Vector2f(1024, 768));
+    gameView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(size.x, size.y));
     gameView.zoom(3.5);
-    target->setView(gameView);
+
+    //(*target)->setView(gameView);
 
     state = new GameState(100, 100, seeder);
     visualizer = new IsometricSceneVisualizer(Vector3f(20, -10, 1), Vector3f(20, 10, 1), target);
@@ -51,15 +53,15 @@ Game::Game(sf::RenderTarget* target) : target(target) {
 }
 
 void Game::nativeEventHandler(sf::Event event) {
+    sf::RenderTarget* target = *this->target;
     // TODO: all this game event logic should be factored out into another, subtyped, class
     if (event.type == sf::Event::MouseMoved) {
         sf::Vector2f mapCoords = target->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
         visualizer->setInputPosition(mapCoords);
 
         if (middleButtonDown) {
-            // TODO: factor out window dimensions
-            int deltaX = (int)std::round((event.mouseMove.x - mouseStart.x) * gameView.getSize().x / 1024.0);
-            int deltaY = (int)std::round((event.mouseMove.y - mouseStart.y) * gameView.getSize().x / 768.0);
+            int deltaX = (int)std::round((event.mouseMove.x - mouseStart.x) * gameView.getSize().x / target->getSize().x);
+            int deltaY = (int)std::round((event.mouseMove.y - mouseStart.y) * gameView.getSize().x / target->getSize().y);
             gameView.setCenter(mapStart.x - deltaX, mapStart.y - deltaY);
         }
     } else if (event.type == sf::Event::MouseButtonPressed) {
@@ -86,7 +88,8 @@ void Game::nativeEventHandler(sf::Event event) {
                 sf::Transform transform = visualizer->getTransform().getInverse();
                 sf::Vector2f point = transform.transformPoint(mapCoords);
 
-                if (point.x >= 0 && point.y >= 0 && point.x < state->getBoard()->getWidth() && point.y < state->getBoard()->getHeight()) {
+                if (point.x >= 0 && point.y >= 0 &&
+                    point.x < state->getBoard()->getWidth() && point.y < state->getBoard()->getHeight()) {
                     GameAction action = generatePathingAction(sf::Vector2i((int)point.x, (int)point.y), state->selectedUnit);
                     state->queueAction(action, state->selectedUnit);
                 }
@@ -99,9 +102,10 @@ void Game::nativeEventHandler(sf::Event event) {
     } else if (event.type == sf::Event::MouseWheelScrolled) {
         if (event.mouseWheelScroll.delta > 0) gameView.zoom(0.9);
         else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.9f);
+    } else if (event.type == sf::Event::Resized) {
+
+        sf::Vector2u size = target->getSize();
+        gameView = sf::View(gameView.getCenter(), sf::Vector2f(size.x, size.y));
+
     }
-}
-
-void Game::interactionEventHandler(GameInteractionEvent event) {
-
 }

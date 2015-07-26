@@ -11,17 +11,16 @@
 
 class Game {
 public:
-    Game(sf::RenderTarget* display);
+    Game(sf::RenderTarget** display);
     bool run();
 
     void nativeEventHandler(sf::Event);
-    void interactionEventHandler(GameInteractionEvent);
-
+    void updateRenderTarger(sf::RenderTarget** target) { this->target = target; };
 
 private:
     GameState* state;
     IsometricSceneVisualizer* visualizer;
-    sf::RenderTarget* target;
+    sf::RenderTarget** target;
     sf::View gameView;
     sf::Vector2i mouseStart;
     sf::Vector2i mapStart;

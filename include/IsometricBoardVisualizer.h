@@ -13,7 +13,7 @@ using sf::Transform;
 
 class IsometricBoardVisualizer {
 public:
-    IsometricBoardVisualizer(Transform& sux, sf::RenderTarget* target);
+    IsometricBoardVisualizer(Transform& sux, sf::RenderTarget** target);
     void draw(CellularBoard* board, sf::Vector2f* input = nullptr);
 
     const sf::FloatRect &getViewport() const {
@@ -22,7 +22,7 @@ public:
 
 private:
     Transform Sux;
-    sf::RenderTarget* target;
+    sf::RenderTarget** target;
     sf::FloatRect viewport;
 };
 

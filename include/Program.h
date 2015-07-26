@@ -14,12 +14,14 @@ public:
     Program(sf::RenderWindow* window);
     ~Program();
 
-    bool run(int tick);
+    bool run();
 
 private:
     Game* currentGame;
     sf::RenderWindow* window;
     sf::RenderTexture* buffer;
+
+    void windowResizeHandler(sf::Event);
 };
 
 

@@ -4,12 +4,14 @@
 
 #include "IsometricBoardVisualizer.h"
 
-IsometricBoardVisualizer::IsometricBoardVisualizer(Transform& sux, sf::RenderTarget* target) {
+IsometricBoardVisualizer::IsometricBoardVisualizer(Transform& sux, sf::RenderTarget** target) {
     Sux = sux;
     this->target = target;
 }
 
 void IsometricBoardVisualizer::draw(CellularBoard* board, sf::Vector2f* input) {
+    sf::RenderTarget* target = *this->target;
+
     // default identity transform
     Transform transform;
 
@@ -24,10 +26,10 @@ void IsometricBoardVisualizer::draw(CellularBoard* board, sf::Vector2f* input) {
             br = transform.transformPoint(width - 1, height - 1),
             bl = transform.transformPoint(0, height - 1);
 
-    int maxX = std::max(std::max(tl.x, tr.x), std::max(br.x, bl.x));
-    int maxY = std::max(std::max(tl.y, tr.y), std::max(br.y, bl.y));
-    int minX = std::min(std::min(tl.x, tr.x), std::min(br.x, bl.x));
-    int minY = std::min(std::min(tl.x, tr.x), std::min(br.x, bl.x));
+    int maxX = (int)std::max(std::max(tl.x, tr.x), std::max(br.x, bl.x));
+    int maxY = (int)std::max(std::max(tl.y, tr.y), std::max(br.y, bl.y));
+    int minX = (int)std::min(std::min(tl.x, tr.x), std::min(br.x, bl.x));
+    int minY = (int)std::min(std::min(tl.x, tr.x), std::min(br.x, bl.x));
 
     viewport.top = minY;
     viewport.left = minX;

@@ -4,7 +4,7 @@
 
 #include "IsometricSceneVisualizer.h"
 
-IsometricSceneVisualizer::IsometricSceneVisualizer(Vector3f uBasis, Vector3f vBasis, sf::RenderTarget* target) :
+IsometricSceneVisualizer::IsometricSceneVisualizer(Vector3f uBasis, Vector3f vBasis, sf::RenderTarget** target) :
     Sux(uBasis.x, vBasis.x, 0,
         uBasis.y, vBasis.y, 0,
         0,        0,        1),
@@ -15,6 +15,7 @@ IsometricSceneVisualizer::IsometricSceneVisualizer(Vector3f uBasis, Vector3f vBa
 }
 
 void IsometricSceneVisualizer::draw(GameState *state) {
+    sf::RenderTarget* target = *this->target;
     boardVisualizer.draw(state->getBoard(), inputEnabled ? &inputPosition : nullptr);
 
     bounds = boardVisualizer.getViewport();

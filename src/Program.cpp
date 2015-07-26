@@ -2,22 +2,25 @@
 // Created by Nathan on 7/10/2015.
 //
 
+#include <EventManager.h>
 #include "Program.h"
 
-bool Program::run(int tick) {
-    if (tick != 0) return true;
+bool Program::run() {
     buffer->clear(sf::Color::Blue);
-    window->clear(sf::Color::Blue);
-    sf::Vector2u size = buffer->getSize();
-    currentGame->run();
+    window->clear(sf::Color::White);
+
+    //currentGame->run();
+
     buffer->display();
+
     const sf::Texture& texture = buffer->getTexture();
+
     sf::Sprite sprite(texture);
     sprite.setPosition(0, 0);
+    sprite.setScale(1, 1);
+
     window->draw(sprite);
 
-
-    //sf::sleep(sf::milliseconds(100));
     return true;
 }
 
@@ -27,7 +30,22 @@ Program::~Program() {
 
 Program::Program(sf::RenderWindow* window) : window(window) {
     buffer = new sf::RenderTexture();
-    buffer->create(1024, 768);
+    buffer->create(window->getSize().x, window->getSize().y);
     buffer->clear(sf::Color::Blue);
-    currentGame = new Game(buffer);
+
+    std::function<void (sf::Event)> handler = std::bind(&Program::windowResizeHandler, this, std::placeholders::_1);
+    EventManager::getInstance()->addListener(handler);
+    //currentGame = new Game((sf::RenderTarget**)&buffer);
+
+}
+
+void Program::windowResizeHandler(sf::Event event) {
+    if (event.type == sf::Event::Resized) {
+        window->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+        delete buffer;
+        buffer = new sf::RenderTexture();
+        buffer->create(event.size.height, event.size.height);
+        buffer->clear(sf::Color::Blue);
+        //currentGame->updateRenderTarger(buffer);
+    }
 }

@@ -16,7 +16,7 @@ using sf::Transform;
 
 class IsometricSceneVisualizer {
 public:
-    IsometricSceneVisualizer(Vector3f uBasis, Vector3f vBasis, sf::RenderTarget* target);
+    IsometricSceneVisualizer(Vector3f uBasis, Vector3f vBasis, sf::RenderTarget** target);
 
     void draw(GameState* state);
     sf::FloatRect getBounds() { return bounds; }
@@ -38,7 +38,7 @@ private:
     Vector3f uBasis, vBasis;
     Transform Sux;
     IsometricBoardVisualizer boardVisualizer;
-    sf::RenderTarget* target;
+    sf::RenderTarget** target;
     sf::FloatRect bounds;
 
     bool inputEnabled = false;

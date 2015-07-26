@@ -11,7 +11,7 @@ int main()
     srand(time(NULL));
     int tick = 0;
     // create the window
-    sf::RenderWindow window(sf::VideoMode(1024, 768), "My window");
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "pe-econ-sim 0.1.0pre");
 
     EventManager::initialize(&window);
     EventManager* eventManager = EventManager::getInstance();
@@ -21,11 +21,9 @@ int main()
     while (window.isOpen())
     {
         eventManager->pollEvents();
-        if (!simulator.run(tick = 0))
+        if (!simulator.run())
             window.close();
-
-        if (tick == 0)
-            window.display();
+        window.display();
     }
 
     return 0;
