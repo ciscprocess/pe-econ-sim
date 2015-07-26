@@ -24,38 +24,32 @@ void CellularBoard::generateAdjacencyGraph() {
         }
     }
 
-    for (int u = 1; u < width; u++) {
-        for (int v = 1; v < height; v++) {
+    for (int u = 0; u < width; u++) {
+        for (int v = 0; v < height; v++) {
             if (this->getCell(u, v).getTraversable()) {
 
-                if (this->getCell(u - 1, v).getTraversable()) {
+                if (u - 1 >= 0 && getCell(u - 1, v).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v][u - 1], nodeGrid[v][u]);
                     (*weights)[edge] = 1;
                 }
 
-                if (this->getCell(u, v - 1).getTraversable()) {
+                if (v - 1 >= 0 && getCell(u, v - 1).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v - 1][u], nodeGrid[v][u]);
                     (*weights)[edge] = 1;
                 }
 
-                if (this->getCell(u- 1, v - 1).getTraversable()) {
+                if (v - 1 >= 0 && u - 1 >= 0 && getCell(u- 1, v - 1).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v - 1][u - 1], nodeGrid[v][u]);
+                    (*weights)[edge] = std::sqrt(2);
+                }
+
+                if (u + 1 < width && v - 1 >= 0 && getCell(u + 1, v - 1).getTraversable()) {
+                    auto edge = graph->addEdge(nodeGrid[v - 1][u + 1], nodeGrid[v][u]);
                     (*weights)[edge] = std::sqrt(2);
                 }
             }
         }
     }
-
-    for (int u = 0; u < width - 1; u++) {
-        for (int v = 1; v < width; v++) {
-            if (this->getCell(u + 1, v - 1).getTraversable()) {
-                auto edge = graph->addEdge(nodeGrid[v - 1][u + 1], nodeGrid[v][u]);
-                (*weights)[edge] = std::sqrt(2);
-            }
-        }
-    }
-
-
 
     adjacencyGraph = graph;
     nodeMap = map;
