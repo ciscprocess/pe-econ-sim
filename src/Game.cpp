@@ -16,28 +16,12 @@ GameAction generatePathingAction( sf::Vector2i end, Unit* unit, int speed = 1) {
     auto tickAction = [=] (GameState* state) mutable {
         sf::Vector2i location = unit->getLocation();
         sf::Vector2i displacement = end - location;
-        if (std::abs(displacement.x) > 0 && std::abs(displacement.y) > 0) {
-            int choice = rand() % 2;
-            if (choice == 0) {
-                int delta = displacement.x > 0 ? 1 : -1;
-                location.x = location.x + delta;
-                unit->setLocation(location);
-            } else {
-                int delta = displacement.y > 0 ? 1 : -1;
-                location.y = location.y + delta;
-                unit->setLocation(location);
-            }
-        } else if (std::abs(displacement.x) > 0) {
-            int delta = displacement.x > 0 ? 1 : -1;
-            location.x = location.x + delta;
-            unit->setLocation(location);
-        } else if (std::abs(displacement.y) > 0) {
-            int delta = displacement.y > 0 ? 1 : -1;
-            location.y = location.y + delta;
-            unit->setLocation(location);
-        }
+        std::vector<sf::Vector2i> path = state->getBoard()->calculatePath(unit->getLocation(), end);
 
-        return std::abs(displacement.x) > 0 || std::abs(displacement.y) > 0;
+        if (path.size() > 0)
+            unit->setLocation(path[0]);
+
+        return path.size() > 0 || std::abs(displacement.x) > 0 || std::abs(displacement.y) > 0;
     };
 
     GameAction action(tickAction);
@@ -102,6 +86,7 @@ void Game::nativeEventHandler(sf::Event event) {
                 sf::Transform transform = visualizer->getTransform().getInverse();
                 sf::Vector2f point = transform.transformPoint(mapCoords);
                 GameAction action = generatePathingAction(sf::Vector2i((int)point.x, (int)point.y), state->selectedUnit);
+
                 state->queueAction(action, state->selectedUnit);
             }
         }

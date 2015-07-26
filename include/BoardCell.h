@@ -15,6 +15,7 @@ public:
 
     TYPE getType() { return type; }
 
+    bool getTraversable() { return traversable; }
     const sf::Color &getBaseColor() const {
         return baseColor;
     }
@@ -22,6 +23,7 @@ public:
 protected:
     TYPE type;
     sf::Color baseColor;
+    bool traversable;
 };
 
 

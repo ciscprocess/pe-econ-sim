@@ -4,6 +4,8 @@
 
 #include "BoardCell.h"
 
-BoardCell::BoardCell(sf::Color baseColor) : baseColor(baseColor) {
+BoardCell::BoardCell(sf::Color baseColor) :
+        baseColor(baseColor),
+        traversable(true) {
     type = TYPE::Undef;
 }

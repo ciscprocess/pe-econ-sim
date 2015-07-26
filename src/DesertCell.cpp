@@ -5,6 +5,7 @@
 #include "DesertCell.h"
 
 DesertCell::DesertCell() {
+    traversable = true;
     type = BoardCell::TYPE::Desert;
     baseColor = sf::Color(244, 244, 0);
 }

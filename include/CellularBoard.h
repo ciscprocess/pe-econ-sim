@@ -4,8 +4,12 @@
 
 #ifndef PE_ECON_SIM_CELLULARBOARD_H
 #define PE_ECON_SIM_CELLULARBOARD_H
+
+#include <lemon/path.h>
 #include "boost/multi_array.hpp"
 #include "BoardCell.h"
+
+#include "lemon/list_graph.h"
 
 class CellularBoard {
 public:
@@ -15,6 +19,8 @@ public:
     void setCell(int u, int v, BoardCell cell) {
         (*grid)[v][u] = cell;
     };
+
+    std::vector<sf::Vector2i> calculatePath(sf::Vector2i start, sf::Vector2i end);
 
     int getWidth() const {
         return width;
@@ -26,11 +32,16 @@ public:
 
     bool hasChanged() { return true; }
 
+    void generateAdjacencyGraph();
+
 private:
     boost::multi_array<BoardCell, 2>* grid;
+    boost::multi_array<lemon::ListGraph::Node, 2> nodeGrid;
+    lemon::ListGraph* adjacencyGraph = nullptr;
+    lemon::ListGraph::NodeMap<sf::Vector2i>* nodeMap = nullptr;
+
     int width, height;
 
-    void generateAdjacencyGraph();
 };
 
 

@@ -5,6 +5,7 @@
 #include "PlainsCell.h"
 
 PlainsCell::PlainsCell() {
+    traversable = true;
     type = BoardCell::TYPE::Plains;
     baseColor = sf::Color(0, 222, 0);
 }

@@ -77,30 +77,30 @@ void IsometricBoardVisualizer::draw(CellularBoard* board, sf::Vector2f* input) {
         target->draw(quad);
     }
 
-//
-//    // draw the lines
-//    sf::VertexArray linesVert(sf::Lines, (width + 1) * 2);
-//    for (int u = 0; u <= width; u++)
-//    {
-//        linesVert[2 * u].position = transform.transformPoint(u, 0);
-//        linesVert[2 * u + 1].position = transform.transformPoint(u, height);
-//
-//        linesVert[2 * u].color = sf::Color::Black;
-//        linesVert[2 * u + 1].color = sf::Color::Black;
-//    }
-//
-//
-//
-//    sf::VertexArray linesHorz(sf::Lines, (height + 1) * 2);
-//    for (int v = 0; v <= height; v++)
-//    {
-//        linesHorz[2 * v].position = transform.transformPoint(0, v);
-//        linesHorz[2 * v + 1].position = transform.transformPoint(width, v);
-//
-//        linesHorz[2 * v].color = sf::Color::Black;
-//        linesHorz[2 * v + 1].color = sf::Color::Black;
-//    }
 
-    //target->draw(linesVert);
-    //target->draw(linesHorz);
+    // draw the lines
+    sf::VertexArray linesVert(sf::Lines, (width + 1) * 2);
+    for (int u = 0; u <= width; u++)
+    {
+        linesVert[2 * u].position = transform.transformPoint(u, 0);
+        linesVert[2 * u + 1].position = transform.transformPoint(u, height);
+
+        linesVert[2 * u].color = sf::Color::Black;
+        linesVert[2 * u + 1].color = sf::Color::Black;
+    }
+
+
+
+    sf::VertexArray linesHorz(sf::Lines, (height + 1) * 2);
+    for (int v = 0; v <= height; v++)
+    {
+        linesHorz[2 * v].position = transform.transformPoint(0, v);
+        linesHorz[2 * v + 1].position = transform.transformPoint(width, v);
+
+        linesHorz[2 * v].color = sf::Color::Black;
+        linesHorz[2 * v + 1].color = sf::Color::Black;
+    }
+
+    target->draw(linesVert);
+    target->draw(linesHorz);
 }

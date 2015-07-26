@@ -76,7 +76,7 @@ void ClusterSeederV2::seedTerrain(GameState *state) {
 
 
     // seed clusters of forest
-    int fcc = rand() % 3 + 4;
+    int fcc = rand() % 2 + 5;
 
     for (int i = 0; i < fcc; i++) {
         int cw = rand() % 5 + 3;
@@ -287,6 +287,7 @@ void ClusterSeederV2::seedTerrain(GameState *state) {
         }
     }
 
+    board->generateAdjacencyGraph();
 }
 
 void ClusterSeederV2::seedInfrastructure(GameState *state) {

@@ -5,6 +5,7 @@
 #include "ForestCell.h"
 
 ForestCell::ForestCell() {
+    traversable = false;
     type = BoardCell::TYPE::Forest;
     baseColor = sf::Color(0, 90, 0);
 }
