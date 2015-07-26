@@ -39,6 +39,7 @@ private:
     boost::multi_array<lemon::ListGraph::Node, 2> nodeGrid;
     lemon::ListGraph* adjacencyGraph = nullptr;
     lemon::ListGraph::NodeMap<sf::Vector2i>* nodeMap = nullptr;
+    lemon::ListGraph::EdgeMap<double>* costs = nullptr;
 
     int width, height;
 

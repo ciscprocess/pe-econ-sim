@@ -4,7 +4,7 @@
 
 #include "CellularBoard.h"
 
-#include "lemon/bfs.h"
+#include "lemon/dijkstra.h"
 
 
 CellularBoard::CellularBoard(int width, int height) : width(width), height(height), nodeGrid(boost::extents[height][width]) {
@@ -15,6 +15,7 @@ void CellularBoard::generateAdjacencyGraph() {
     using namespace lemon;
     ListGraph *graph = new ListGraph();
     ListGraph::NodeMap<sf::Vector2i>* map = new ListGraph::NodeMap<sf::Vector2i>(*graph);
+    ListGraph::EdgeMap<double>* weights = new ListGraph::EdgeMap<double>(*graph);
 
     for (int u = 0; u < width; u++) {
         for (int v = 0; v < height; v++) {
@@ -28,15 +29,18 @@ void CellularBoard::generateAdjacencyGraph() {
             if (this->getCell(u, v).getTraversable()) {
 
                 if (this->getCell(u - 1, v).getTraversable()) {
-                    graph->addEdge(nodeGrid[v][u - 1], nodeGrid[v][u]);
+                    auto edge = graph->addEdge(nodeGrid[v][u - 1], nodeGrid[v][u]);
+                    (*weights)[edge] = 1;
                 }
 
                 if (this->getCell(u, v - 1).getTraversable()) {
-                    graph->addEdge(nodeGrid[v - 1][u], nodeGrid[v][u]);
+                    auto edge = graph->addEdge(nodeGrid[v - 1][u], nodeGrid[v][u]);
+                    (*weights)[edge] = 1;
                 }
 
                 if (this->getCell(u- 1, v - 1).getTraversable()) {
-                    graph->addEdge(nodeGrid[v - 1][u - 1], nodeGrid[v][u]);
+                    auto edge = graph->addEdge(nodeGrid[v - 1][u - 1], nodeGrid[v][u]);
+                    (*weights)[edge] = std::sqrt(2);
                 }
             }
         }
@@ -45,7 +49,8 @@ void CellularBoard::generateAdjacencyGraph() {
     for (int u = 0; u < width - 1; u++) {
         for (int v = 1; v < width; v++) {
             if (this->getCell(u + 1, v - 1).getTraversable()) {
-                graph->addEdge(nodeGrid[v - 1][u + 1], nodeGrid[v][u]);
+                auto edge = graph->addEdge(nodeGrid[v - 1][u + 1], nodeGrid[v][u]);
+                (*weights)[edge] = std::sqrt(2);
             }
         }
     }
@@ -54,6 +59,7 @@ void CellularBoard::generateAdjacencyGraph() {
 
     adjacencyGraph = graph;
     nodeMap = map;
+    costs = weights;
 }
 
 std::vector<sf::Vector2i> CellularBoard::calculatePath(sf::Vector2i start, sf::Vector2i end) {
@@ -61,14 +67,12 @@ std::vector<sf::Vector2i> CellularBoard::calculatePath(sf::Vector2i start, sf::V
 
     ListGraph::Node startNode = nodeGrid[start.y][start.x];
     ListGraph::Node endNode = nodeGrid[end.y][end.x];
-    Bfs<ListGraph> bfs(*adjacencyGraph);
-
-
-    bfs.run(startNode);
 
     std::vector<sf::Vector2i> path;
 
-    ListPath<ListGraph> intPath = bfs.path(endNode);
+    ListPath<ListGraph> intPath;
+
+    dijkstra(*adjacencyGraph, *costs).path(intPath).run(startNode, endNode);
 
     for (int i = 0; i < intPath.length(); i++) {
         ListGraph::Node target = adjacencyGraph->target(intPath.nth(i));
