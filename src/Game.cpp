@@ -21,7 +21,7 @@ GameAction generatePathingAction( sf::Vector2i end, Unit* unit, int speed = 1) {
         if (path.size() > 0)
             unit->setLocation(path[0]);
 
-        return path.size() > 0 || std::abs(displacement.x) > 0 || std::abs(displacement.y) > 0;
+        return path.size() > 0 && (std::abs(displacement.x) > 0 || std::abs(displacement.y) > 0);
     };
 
     GameAction action(tickAction);

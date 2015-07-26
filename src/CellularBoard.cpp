@@ -34,9 +34,23 @@ void CellularBoard::generateAdjacencyGraph() {
                 if (this->getCell(u, v - 1).getTraversable()) {
                     graph->addEdge(nodeGrid[v - 1][u], nodeGrid[v][u]);
                 }
+
+                if (this->getCell(u- 1, v - 1).getTraversable()) {
+                    graph->addEdge(nodeGrid[v - 1][u - 1], nodeGrid[v][u]);
+                }
             }
         }
     }
+
+    for (int u = 0; u < width - 1; u++) {
+        for (int v = 1; v < width; v++) {
+            if (this->getCell(u + 1, v - 1).getTraversable()) {
+                graph->addEdge(nodeGrid[v - 1][u + 1], nodeGrid[v][u]);
+            }
+        }
+    }
+
+
 
     adjacencyGraph = graph;
     nodeMap = map;
