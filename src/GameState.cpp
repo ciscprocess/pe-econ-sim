@@ -8,8 +8,13 @@
 void GameState::tick() {
     for (std::map<void*, GameActionQueue>::iterator i = actions.begin(); i != actions.end(); i++) {
         GameActionQueue& action = i->second;
-        if (!action.tick(this))
+        if (!action.tick(this)) {
             actions.erase(i--);
+            if (actions.size() < 1)
+                break;
+        }
+
+
     }
 }
 

@@ -85,9 +85,11 @@ void Game::nativeEventHandler(sf::Event event) {
             if (state->selectedUnit) {
                 sf::Transform transform = visualizer->getTransform().getInverse();
                 sf::Vector2f point = transform.transformPoint(mapCoords);
-                GameAction action = generatePathingAction(sf::Vector2i((int)point.x, (int)point.y), state->selectedUnit);
 
-                state->queueAction(action, state->selectedUnit);
+                if (point.x >= 0 && point.y >= 0 && point.x < state->getBoard()->getWidth() && point.y < state->getBoard()->getHeight()) {
+                    GameAction action = generatePathingAction(sf::Vector2i((int)point.x, (int)point.y), state->selectedUnit);
+                    state->queueAction(action, state->selectedUnit);
+                }
             }
         }
     } else if (event.type == sf::Event::MouseButtonReleased) {
