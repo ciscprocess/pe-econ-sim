@@ -11,7 +11,8 @@ int main()
     srand(time(NULL));
     int tick = 0;
     // create the window
-    sf::RenderWindow window(sf::VideoMode(1024, 768), "My window");
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "pe-econ-sim 0.1.0pre");
+
 
     EventManager::initialize(&window);
     EventManager* eventManager = EventManager::getInstance();

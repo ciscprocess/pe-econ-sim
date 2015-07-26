@@ -20,6 +20,8 @@ private:
     Game* currentGame;
     sf::RenderWindow* window;
     sf::RenderTexture* buffer;
+
+    void windowResizeHandler(sf::Event event);
 };
 
 

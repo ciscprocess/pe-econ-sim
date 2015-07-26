@@ -2,6 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
+#include <EventManager.h>
 #include "Program.h"
 
 bool Program::run(int tick) {
@@ -27,7 +28,22 @@ Program::~Program() {
 
 Program::Program(sf::RenderWindow* window) : window(window) {
     buffer = new sf::RenderTexture();
-    buffer->create(1024, 768);
+    buffer->create(window->getSize().x, window->getSize().y);
+
     buffer->clear(sf::Color::Blue);
+
+
+    std::function<void (sf::Event)> handler = std::bind(&Program::windowResizeHandler, this, std::placeholders::_1);
+    EventManager::getInstance()->addListener(handler);
+
     currentGame = new Game(buffer);
+
+}
+
+void Program::windowResizeHandler(sf::Event event) {
+    if (event.type == sf::Event::Resized) {
+        window->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+        buffer->create(event.size.width, event.size.height);
+        buffer->clear(sf::Color::Blue);
+    }
 }
