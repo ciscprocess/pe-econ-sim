@@ -1,6 +1,10 @@
-//
-// Created by Nathan on 7/10/2015.
-//
+/*
+ * file: Program.h
+ * author: Nathan Korzekwa
+ * date: 2015-07-10
+ * description:
+ * An organization class that neatly wraps game operations and UI updates into a state-managed interface
+ */
 
 #ifndef PE_ECON_SIM_PROGRAM_H
 #define PE_ECON_SIM_PROGRAM_H
@@ -14,7 +18,7 @@ public:
     Program(sf::RenderWindow* window);
     ~Program();
 
-    bool run(int tick);
+    bool run();
 
 private:
     Game* currentGame;

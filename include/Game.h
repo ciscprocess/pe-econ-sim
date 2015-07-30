@@ -15,8 +15,6 @@ public:
     bool run();
 
     void nativeEventHandler(sf::Event);
-    void interactionEventHandler(GameInteractionEvent);
-
 
 private:
     GameState* state;

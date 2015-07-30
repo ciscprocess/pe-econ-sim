@@ -1,6 +1,12 @@
-//
-// Created by Nathan on 7/10/2015.
-//
+/*
+ * file: ClusterSeederV2.h
+ * author: Nathan Korzekwa
+ * date: 2015-07-22
+ * description:
+ * the second, improved, terrain generator. it takes the model of ClusterSeederV1, but uses two, alternating rule sets
+ * for cell propagation, and each cluster as a polar function associated with it that determines the relative rate of
+ * growth for each tile surrounding it
+ */
 
 #ifndef PE_ECON_SIM_CLUSTERSEEDERV2_H
 #define PE_ECON_SIM_CLUSTERSEEDERV2_H
@@ -25,7 +31,9 @@ public:
     private:
         std::vector<std::pair<double, double>> sizesAndPhases;
 
+        // the generated polar function for a cluster
         double func(double theta);
+        // the derivative of the logistic sigmoid
         double dSigmoid(double x);
 
     };

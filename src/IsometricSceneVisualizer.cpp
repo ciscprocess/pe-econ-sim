@@ -4,7 +4,7 @@
 
 #include "IsometricSceneVisualizer.h"
 
-IsometricSceneVisualizer::IsometricSceneVisualizer(Vector3f uBasis, Vector3f vBasis, sf::RenderTarget* target) :
+IsometricSceneVisualizer::IsometricSceneVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis, sf::RenderTarget* target) :
     Sux(uBasis.x, vBasis.x, 0,
         uBasis.y, vBasis.y, 0,
         0,        0,        1),

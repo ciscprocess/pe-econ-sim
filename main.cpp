@@ -1,3 +1,11 @@
+/*
+ * file: main.cpp
+ * author: Nathan Korzekwa
+ * date: 2015-07-10
+ * description:
+ * the executable for pe-econ-sim, an experimental economy simulator by NP-Undocked
+ */
+
 #include <SFML/Graphics.hpp>
 
 #include "Program.h"
@@ -22,11 +30,10 @@ int main()
     while (window.isOpen())
     {
         eventManager->pollEvents();
-        if (!simulator.run(tick = 0))
+        if (!simulator.run())
             window.close();
 
-        if (tick == 0)
-            window.display();
+        window.display();
     }
 
     return 0;

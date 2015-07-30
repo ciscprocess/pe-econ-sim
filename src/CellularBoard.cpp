@@ -31,21 +31,36 @@ void CellularBoard::generateAdjacencyGraph() {
                 if (u - 1 >= 0 && getCell(u - 1, v).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v][u - 1], nodeGrid[v][u]);
                     (*weights)[edge] = 1;
+
+                    if (getCell(u - 1, v).getType() == BoardCell::TYPE::Forest) {
+                        (*weights)[edge] *=2;
+                    }
                 }
 
                 if (v - 1 >= 0 && getCell(u, v - 1).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v - 1][u], nodeGrid[v][u]);
                     (*weights)[edge] = 1;
+
+                    if (getCell(u, v - 1).getType() == BoardCell::TYPE::Forest) {
+                        (*weights)[edge] *=2;
+                    }
                 }
 
                 if (v - 1 >= 0 && u - 1 >= 0 && getCell(u- 1, v - 1).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v - 1][u - 1], nodeGrid[v][u]);
                     (*weights)[edge] = std::sqrt(2);
+                    if (getCell(u - 1, v - 1).getType() == BoardCell::TYPE::Forest) {
+                        (*weights)[edge] *=2;
+                    }
                 }
 
                 if (u + 1 < width && v - 1 >= 0 && getCell(u + 1, v - 1).getTraversable()) {
                     auto edge = graph->addEdge(nodeGrid[v - 1][u + 1], nodeGrid[v][u]);
                     (*weights)[edge] = std::sqrt(2);
+
+                    if (getCell(u + 1, v - 1).getType() == BoardCell::TYPE::Forest) {
+                        (*weights)[edge] *=2;
+                    }
                 }
             }
         }

@@ -320,11 +320,14 @@ double ClusterSeederV2::AnchorPoint::func(double theta) {
     for (auto pair : sizesAndPhases) {
         double size = pair.first;
         double phase = pair.second;
+
         // warning: some kind of wrapping will be needed for this!
+        // this might explain some of the harsh edges seen; however this is a minor problem
         value1 += size * dSigmoid(10 * (theta - phase));
         value2 += size * dSigmoid(10 * (theta - 2*PI - phase));
     }
 
+    // two values in case a sigmoid function borders PI or -PI
     return std::abs(value1) > std::abs(value2) ? value1 : value2;
 }
 
@@ -340,10 +343,6 @@ boost::uniform_real<> phaseDistribution( -PI, PI );
 boost::variate_generator< RNGType, boost::uniform_real<> > phaseGen(rng, phaseDistribution);
 
 ClusterSeederV2::AnchorPoint::AnchorPoint(sf::Vector2f location) : location(location) {
-
-
-
-
     for (int i = 0; i < 10; i++) {
         sizesAndPhases.push_back(std::make_pair(sizeGen(), phaseGen()));
     }
