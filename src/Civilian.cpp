@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "Civilian.h"
+#include "game/Civilian.h"
 
 Civilian::Civilian() {
     type = Unit::UnitType::Civilian;

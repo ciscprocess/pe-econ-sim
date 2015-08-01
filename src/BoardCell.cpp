@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "BoardCell.h"
+#include "world/BoardCell.h"
 
 BoardCell::BoardCell(sf::Color baseColor) :
         baseColor(baseColor),

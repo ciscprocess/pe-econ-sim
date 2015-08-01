@@ -6,7 +6,7 @@
 #define PE_ECON_SIM_FORESTCELL_H
 
 
-#include "BoardCell.h"
+#include "world/BoardCell.h"
 
 class ForestCell : public BoardCell {
 public:

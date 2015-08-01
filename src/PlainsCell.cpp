@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "PlainsCell.h"
+#include "world/PlainsCell.h"
 
 PlainsCell::PlainsCell() {
     traversable = true;

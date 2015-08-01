@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "EventManager.h"
+#include "event/EventManager.h"
 EventManager* EventManager::INSTANCE = nullptr;
 
 EventManager::EventManager(sf::RenderWindow *window) : window(window) {

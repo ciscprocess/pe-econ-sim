@@ -6,8 +6,8 @@
 #define PE_ECON_SIM_GAMESTATE_H
 
 
-#include "GameStateSeeder.h"
-#include "CellularBoard.h"
+#include "game/generation/GameStateSeeder.h"
+#include "world/CellularBoard.h"
 #include "Unit.h"
 #include "GameAction.h"
 #include "GameActionQueue.h"

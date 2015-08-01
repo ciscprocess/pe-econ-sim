@@ -1,4 +1,4 @@
-#include <EventManager.h>
+#include "event/EventManager.h"
 #include "Program.h"
 
 // constructs an application around a given window

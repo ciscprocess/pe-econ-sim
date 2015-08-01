@@ -6,7 +6,7 @@
 #define PE_ECON_SIM_GAMESTATESEEDER_H
 
 
-#include "GameState.h"
+#include "game/GameState.h"
 
 class GameState;
 class GameStateSeeder {

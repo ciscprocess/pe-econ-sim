@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "ForestCell.h"
+#include "world/ForestCell.h"
 
 ForestCell::ForestCell() {
     traversable = true;

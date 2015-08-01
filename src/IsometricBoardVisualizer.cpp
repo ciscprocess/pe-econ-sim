@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "IsometricBoardVisualizer.h"
+#include "visualization/IsometricBoardVisualizer.h"
 
 IsometricBoardVisualizer::IsometricBoardVisualizer(Transform& sux, sf::RenderTarget* target) {
     Sux = sux;
@@ -38,7 +38,6 @@ void IsometricBoardVisualizer::draw(CellularBoard* board, sf::Vector2f* input) {
 
     for (int v = 0; v < height; v++) {
         for (int u = 0; u < width; u++) {
-
             BoardCell cell = board->getCell(u, v);
 
             sf::VertexArray quad(sf::Quads, 4);
@@ -79,28 +78,26 @@ void IsometricBoardVisualizer::draw(CellularBoard* board, sf::Vector2f* input) {
 
 
     // draw the lines
-    sf::VertexArray linesVert(sf::Lines, (width + 1) * 2);
-    for (int u = 0; u <= width; u++)
-    {
-        linesVert[2 * u].position = transform.transformPoint(u, 0);
-        linesVert[2 * u + 1].position = transform.transformPoint(u, height);
+    sf::VertexArray linesVertical(sf::Lines, (width + 1) * 2);
+    for (int u = 0; u <= width; u++) {
+        linesVertical[2 * u].position = transform.transformPoint(u, 0);
+        linesVertical[2 * u + 1].position = transform.transformPoint(u, height);
 
-        linesVert[2 * u].color = sf::Color::Black;
-        linesVert[2 * u + 1].color = sf::Color::Black;
+        linesVertical[2 * u].color = sf::Color::Black;
+        linesVertical[2 * u + 1].color = sf::Color::Black;
     }
 
 
 
-    sf::VertexArray linesHorz(sf::Lines, (height + 1) * 2);
-    for (int v = 0; v <= height; v++)
-    {
-        linesHorz[2 * v].position = transform.transformPoint(0, v);
-        linesHorz[2 * v + 1].position = transform.transformPoint(width, v);
+    sf::VertexArray linesHorizontal(sf::Lines, (height + 1) * 2);
+    for (int v = 0; v <= height; v++) {
+        linesHorizontal[2 * v].position = transform.transformPoint(0, v);
+        linesHorizontal[2 * v + 1].position = transform.transformPoint(width, v);
 
-        linesHorz[2 * v].color = sf::Color::Black;
-        linesHorz[2 * v + 1].color = sf::Color::Black;
+        linesHorizontal[2 * v].color = sf::Color::Black;
+        linesHorizontal[2 * v + 1].color = sf::Color::Black;
     }
 
-    target->draw(linesVert);
-    target->draw(linesHorz);
+    target->draw(linesVertical);
+    target->draw(linesHorizontal);
 }

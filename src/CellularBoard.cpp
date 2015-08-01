@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "CellularBoard.h"
+#include "world/CellularBoard.h"
 
 #include "lemon/dijkstra.h"
 

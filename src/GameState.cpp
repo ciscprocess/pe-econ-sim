@@ -2,8 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include <ClusterSeederV1.h>
-#include "GameState.h"
+#include "game/GameState.h"
 
 void GameState::tick() {
     for (std::map<void*, GameActionQueue>::iterator i = actions.begin(); i != actions.end(); i++) {
@@ -34,7 +33,7 @@ void GameState::queueAction(GameAction &action, void* key) {
     queue.add(action);
 }
 
-void GameState::putAction(GameAction &action, void *key) {
+void GameState::putAction(GameAction &action, void* key) {
     actions[key] = GameActionQueue(key);
 
     GameActionQueue& queue = actions[key];

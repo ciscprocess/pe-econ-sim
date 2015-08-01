@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "IsometricSceneVisualizer.h"
+#include "visualization/IsometricSceneVisualizer.h"
 
 IsometricSceneVisualizer::IsometricSceneVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis, sf::RenderTarget* target) :
     Sux(uBasis.x, vBasis.x, 0,
@@ -24,6 +24,7 @@ void IsometricSceneVisualizer::draw(GameState *state) {
         Unit* unit = state->units[i];
         sf::Texture* texture = unit->getTexture();
 
+        // TODO: potential speed problem: the texture is copied in memory every frame
         sf::Sprite sprite;
         sprite.setTexture(*texture);
         sf::Vector2f gamePoint = sf::Vector2f(unit->getLocation().x, unit->getLocation().y);
@@ -32,7 +33,7 @@ void IsometricSceneVisualizer::draw(GameState *state) {
         sprite.setPosition(screenPoint);
 
 
-
+        // draw the selection ellipse beneath the character
         if (unit == state->selectedUnit) {
             sf::ConvexShape transformedEllipse;
             transformedEllipse.setPointCount(25);
@@ -46,8 +47,11 @@ void IsometricSceneVisualizer::draw(GameState *state) {
             transformedEllipse.setFillColor(sf::Color::Transparent);
             transformedEllipse.setOutlineColor(sf::Color::White);
             transformedEllipse.setOutlineThickness(1);
-            sf::Vector2f gamePoint2 = sf::Vector2f(unit->getLocation().x, unit->getLocation().y) + sf::Vector2f(0.5, 0.5);
+            sf::Vector2f gamePoint2 = sf::Vector2f(unit->getLocation().x, unit->getLocation().y)
+                                      + sf::Vector2f(0.5, 0.5);
+
             sf::Vector2f screenPoint2 = Sux.transformPoint(gamePoint2);
+
             transformedEllipse.setPosition(screenPoint2);
             target->draw(transformedEllipse);
         }
@@ -59,6 +63,7 @@ void IsometricSceneVisualizer::draw(GameState *state) {
 
 Unit *IsometricSceneVisualizer::findUnitAtLocation(sf::Vector2f location) {
     Unit* found = nullptr;
+
     for (int i = 0; i < this->sprites.size(); i++) {
         sf::Sprite sprite = this->sprites[i].first;
         if (sprite.getGlobalBounds().contains(location)) {

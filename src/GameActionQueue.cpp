@@ -2,7 +2,7 @@
 // Created by Nathan on 7/12/2015.
 //
 
-#include "GameActionQueue.h"
+#include "game/GameActionQueue.h"
 
 GameActionQueue::GameActionQueue(void *key) {
 

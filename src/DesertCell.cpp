@@ -2,7 +2,7 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include "DesertCell.h"
+#include "world/DesertCell.h"
 
 DesertCell::DesertCell() {
     traversable = true;

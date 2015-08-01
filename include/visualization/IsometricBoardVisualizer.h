@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <SFML/System.hpp>
-#include "GameState.h"
+#include "game/GameState.h"
 
 using sf::Transform;
 

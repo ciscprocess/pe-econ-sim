@@ -1,27 +1,23 @@
 //
 // Created by Nathan on 7/10/2015.
 //
+#include "game/Game.h"
 
-#include <ClusterSeederV1.h>
-#include "Game.h"
+#include "event/EventManager.h"
+#include "event/ClickAtCoordinate.h"
+#include "game/generation/ClusterSeederV2.h"
 
-#include <EventManager.h>
-#include <ClickAtCoordinate.h>
-#include <ClusterSeederV2.h>
-
-using sf::Vector3f;
 
 GameAction generatePathingAction( sf::Vector2i end, Unit* unit, int speed = 1) {
 
     auto tickAction = [=] (GameState* state) mutable {
         sf::Vector2i location = unit->getLocation();
-        sf::Vector2i displacement = end - location;
         std::vector<sf::Vector2i> path = state->getBoard()->calculatePath(unit->getLocation(), end);
 
         if (path.size() > 0)
             unit->setLocation(path[0]);
 
-        return path.size() > 0 && (std::abs(displacement.x) > 0 || std::abs(displacement.y) > 0);
+        return path.size() > 0;
     };
 
     GameAction action(tickAction);
@@ -98,7 +94,12 @@ void Game::nativeEventHandler(sf::Event event) {
 
                     auto destination = sf::Vector2i((int)point.x, (int)point.y);
                     GameAction action = generatePathingAction(destination, state->selectedUnit);
-                    state->queueAction(action, state->selectedUnit);
+
+                    if (event.key.shift) {
+                        state->queueAction(action, state->selectedUnit);
+                    } else {
+                        state->putAction(action, state->selectedUnit);
+                    }
                 }
             }
         }

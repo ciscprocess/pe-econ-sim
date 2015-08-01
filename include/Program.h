@@ -10,7 +10,7 @@
 #define PE_ECON_SIM_PROGRAM_H
 
 
-#include "Game.h"
+#include "game/Game.h"
 
 class Program {
 

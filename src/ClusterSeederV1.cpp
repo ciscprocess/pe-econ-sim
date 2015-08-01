@@ -2,11 +2,11 @@
 // Created by Nathan on 7/10/2015.
 //
 
-#include <PlainsCell.h>
-#include <DesertCell.h>
-#include <ForestCell.h>
-#include <Civilian.h>
-#include "ClusterSeederV1.h"
+#include "world/PlainsCell.h"
+#include "world/DesertCell.h"
+#include "world/ForestCell.h"
+#include "game/Civilian.h"
+#include "game/generation/ClusterSeederV1.h"
 
 ClusterSeederV1::ClusterSeederV1() {
 

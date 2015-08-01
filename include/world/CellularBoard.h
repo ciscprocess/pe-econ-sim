@@ -7,7 +7,7 @@
 
 #include <lemon/path.h>
 #include "boost/multi_array.hpp"
-#include "BoardCell.h"
+#include "world/BoardCell.h"
 
 #include "lemon/list_graph.h"
 

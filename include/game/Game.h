@@ -5,9 +5,9 @@
 #ifndef PE_ECON_SIM_GAME_H
 #define PE_ECON_SIM_GAME_H
 
-#include "GameState.h"
-#include "IsometricSceneVisualizer.h"
-#include "GameInteractionEvent.h"
+#include "game/GameState.h"
+#include "visualization/IsometricSceneVisualizer.h"
+#include "event/GameInteractionEvent.h"
 
 class Game {
 public:

@@ -10,7 +10,7 @@
 #define PE_ECON_SIM_PLAINSCELL_H
 
 
-#include "BoardCell.h"
+#include "world/BoardCell.h"
 
 class PlainsCell : public BoardCell {
 public:
