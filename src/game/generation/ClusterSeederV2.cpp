@@ -4,22 +4,21 @@
 
 #include "world/PlainsCell.h"
 #include "world/DesertCell.h"
-#include <world/ForestCell.h>
+#include "world/ForestCell.h"
 #include "game/Civilian.h"
 #include "game/generation/ClusterSeederV2.h"
 #include <boost/math/constants/constants.hpp>
+#include <numeric/Random.h>
+#include <boost/generator_iterator.hpp>
 
-#include "boost/random.hpp"
-#include "boost/generator_iterator.hpp"
-
-#include <algorithm>
-
-#include <numeric>
 
 namespace undocked {
     namespace game {
         namespace generation {
+            numeric::Random random(200);
+
             using namespace world;
+
             ClusterSeederV2::ClusterSeederV2() {
 
             }
@@ -33,21 +32,11 @@ namespace undocked {
                 int width = board->getWidth(), height = board->getHeight();
 
 
-                typedef boost::mt19937 RNGType;
-                RNGType rng(rand());
+                std::vector<AnchorPoint*> anchors;
+                boost::multi_array<AnchorPoint*, 2> closestAnchors(boost::extents[height][width]);
 
-
-                boost::uniform_real<> dist(0, 1);
-                boost::variate_generator<RNGType, boost::uniform_real<> > gen(rng, dist);
-
-                double val = gen();
-
-
-                std::vector<AnchorPoint *> anchors;
-                boost::multi_array<AnchorPoint *, 2> closestAnchors(boost::extents[height][width]);
-
-                std::vector<AnchorPoint *> desertAnchors;
-                boost::multi_array<AnchorPoint *, 2> closestDesertAnchors(boost::extents[height][width]);
+                std::vector<AnchorPoint*> desertAnchors;
+                boost::multi_array<AnchorPoint*, 2> closestDesertAnchors(boost::extents[height][width]);
 
 
                 // fill in with the default: PlainsCell
@@ -57,15 +46,19 @@ namespace undocked {
                     }
                 }
 
-
                 // seed clusters of desert
-                int dcc = 1 + rand() % 2;
+                int dcc = 1 + (random.get() > 0.5 ? 0 : 1);
 
+                auto widthGen = random.createUniformInteger(3, 7);
                 for (int i = 0; i < dcc; i++) {
-                    int cw = rand() % 5 + 3;
-                    int ch = rand() % 5 + 3;
-                    int tu = rand() % (width - cw);
-                    int tv = rand() % (height - ch);
+                    int cw = widthGen();
+                    int ch = widthGen();
+
+                    random.setUniform(0, width - cw - 1);
+                    int tu = random.getUniformInteger();
+
+                    random.setUniform(0, width - ch - 1);
+                    int tv = random.getUniformInteger();
 
                     int cx = tu + cw / 2;
                     int cy = tv + ch / 2;
@@ -75,20 +68,25 @@ namespace undocked {
 
                     for (int u = tu; u < tu + cw; u++) {
                         for (int v = tv; v < tv + ch; v++) {
-                            if (gen() < 0.8)
+                            if (random.get() < 0.8)
                                 board->setCell(u, v, DesertCell());
                         }
                     }
                 }
 
                 // seed clusters of forest
-                int fcc = rand() % 2 + 5;
+                random.setUniform(2, 6);
+                int fcc = random.getUniformInteger();
 
                 for (int i = 0; i < fcc; i++) {
-                    int cw = rand() % 5 + 3;
-                    int ch = rand() % 5 + 3;
-                    int tu = rand() % (width - cw);
-                    int tv = rand() % (height - ch);
+                    int cw = widthGen();
+                    int ch = widthGen();
+                    random.setUniform(0, width - cw - 1);
+                    int tu = random.getUniformInteger();
+
+                    random.setUniform(0, width - ch - 1);
+                    int tv = random.getUniformInteger();
+
                     int cx = tu + cw / 2;
                     int cy = tv + ch / 2;
                     AnchorPoint *current = new AnchorPoint(sf::Vector2f(cx, cy));
@@ -97,7 +95,7 @@ namespace undocked {
 
                     for (int u = tu; u < tu + cw; u++) {
                         for (int v = tv; v < tv + ch; v++) {
-                            if (gen() < 0.8)
+                            if (random.get() < 0.8)
                                 board->setCell(u, v, ForestCell());
                         }
                     }
@@ -131,16 +129,11 @@ namespace undocked {
                                 minDist = dist;
                             }
                         }
-
-
-                        //board->setCell(u, v, BoardCell(sf::Color(closest->getComponent(sf::Vector2f(u, v)) * 255, 0, 0)));
                         closestDesertAnchors[v][u] = closest;
                     }
                 }
 
 
-
-                //return;
                 // propagate the desert and forest terrains
                 int iterations = (int) ceil((sqrt(width * height) / 40) * 6) * 3;
                 int ruleSet = 0;
@@ -155,8 +148,8 @@ namespace undocked {
                             int left = u - 1;
                             int d_incident = 0, f_incident = 0;
 
-                            auto in = [height, width](int a, bool up) {
-                                if (up) {
+                            auto in = [height, width](int a, bool isUp) {
+                                if (isUp) {
                                     return a >= 0 && a < height;
                                 } else {
                                     return a >= 0 && a < width;
@@ -208,7 +201,7 @@ namespace undocked {
 
                                 if (cell.getType() == BoardCell::TYPE::Desert) {
                                     if (d_count == 1) {
-                                        if (gen() < 0)
+                                        if (random.get() < 0)
                                             board->setCell(u, v, PlainsCell());
 
                                     }
@@ -219,15 +212,15 @@ namespace undocked {
                                 else if (cell.getType() == BoardCell::TYPE::Plains) {
                                     AnchorPoint *p = closestAnchors[v][u];
                                     AnchorPoint *dp = closestDesertAnchors[v][u];
-                                    if (d_count > 1 && dp->getComponent(sf::Vector2f(u, v)) > gen() + 0.1)
+                                    if (d_count > 1 && dp->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1)
                                         board->setCell(u, v, DesertCell());
-                                    else if (d_count > 0 && dp->getComponent(sf::Vector2f(u, v)) > gen() + 0.1 && gen() > 0.5) {
+                                    else if (d_count > 0 && dp->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1 && random.get() > 0.5) {
                                         board->setCell(u, v, DesertCell());
                                     }
-                                    else if (f_count > 1 && p->getComponent(sf::Vector2f(u, v)) > gen() + 0.1) {
+                                    else if (f_count > 1 && p->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1) {
                                         board->setCell(u, v, ForestCell());
                                     }
-                                    else if (f_count > 0 && p->getComponent(sf::Vector2f(u, v)) > gen() + 0.1 && gen() > 0.5) {
+                                    else if (f_count > 0 && p->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1 && random.get() > 0.5) {
                                         board->setCell(u, v, ForestCell());
                                     }
 
@@ -235,9 +228,9 @@ namespace undocked {
                                 else if (cell.getType() == BoardCell::TYPE::Forest) {
                                     if (d_count > 0)
                                         board->setCell(u, v, PlainsCell());
-                                    else if (f_count == 1 && gen() > 0.9)
+                                    else if (f_count == 1 && random.get() > 0.9)
                                         board->setCell(u, v, PlainsCell());
-                                    else if (f_count == 0 && gen() > 0.5)
+                                    else if (f_count == 0 && random.get() > 0.5)
                                         board->setCell(u, v, PlainsCell());
                                 }
                             }
@@ -252,7 +245,7 @@ namespace undocked {
 
                                 if (cell.getType() == BoardCell::TYPE::Desert) {
                                     if (d_count == 1) {
-                                        if (gen() < 0.5)
+                                        if (random.get() < 0.5)
                                             board->setCell(u, v, PlainsCell());
                                     }
                                     else if (d_count == 0) {
@@ -262,15 +255,15 @@ namespace undocked {
                                 else if (cell.getType() == BoardCell::TYPE::Plains) {
                                     AnchorPoint *p = closestAnchors[v][u];
                                     AnchorPoint *dp = closestDesertAnchors[v][u];
-                                    if (d_count > 1 && dp->getComponent(sf::Vector2f(u, v)) > gen() + 0.1)
+                                    if (d_count > 1 && dp->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1)
                                         board->setCell(u, v, DesertCell());
-                                    else if (d_count > 0 && dp->getComponent(sf::Vector2f(u, v)) > gen() + 0.1 && gen() > 0.5) {
+                                    else if (d_count > 0 && dp->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1 && random.get() > 0.5) {
                                         board->setCell(u, v, DesertCell());
                                     }
-                                    else if (f_count > 1 && p->getComponent(sf::Vector2f(u, v)) > gen() + 0.1) {
+                                    else if (f_count > 1 && p->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1) {
                                         board->setCell(u, v, ForestCell());
                                     }
-                                    else if (f_count > 0 && p->getComponent(sf::Vector2f(u, v)) > gen() + 0.1 && gen() > 0.5) {
+                                    else if (f_count > 0 && p->getComponent(sf::Vector2f(u, v)) > random.get() + 0.1 && random.get() > 0.5) {
                                         board->setCell(u, v, ForestCell());
                                     }
 
@@ -278,9 +271,9 @@ namespace undocked {
                                 else if (cell.getType() == BoardCell::TYPE::Forest) {
                                     if (d_count > 0)
                                         board->setCell(u, v, PlainsCell());
-                                    else if (f_count == 1 && gen() > 0.7)
+                                    else if (f_count == 1 && random.get() > 0.7)
                                         board->setCell(u, v, PlainsCell());
-                                    else if (f_count == 0 && gen() > 0.4)
+                                    else if (f_count == 0 && random.get() > 0.4)
                                         board->setCell(u, v, PlainsCell());
                                 }
                             }
@@ -289,6 +282,15 @@ namespace undocked {
                 }
 
                 board->generateAdjacencyGraph();
+
+                // clean up
+                for (auto anchor : desertAnchors) {
+                    delete anchor;
+                }
+
+                for (auto anchor : anchors) {
+                    delete anchor;
+                }
             }
 
             void ClusterSeederV2::seedInfrastructure(GameState *state) {
@@ -299,13 +301,17 @@ namespace undocked {
                 int width = state->getBoard()->getWidth(),
                         height = state->getBoard()->getHeight();
 
-                int cw = rand() % 5 + 4;
-                int ch = rand() % 5 + 4;
-                int tu = rand() % (width - cw);
-                int tv = rand() % (height - ch);
+                auto widthGen = random.createUniformInteger(4, 8);
+                int cw = widthGen();
+                int ch = widthGen();
+
+                int tu = random.createUniformInteger(0, width - cw - 1)();
+                int tv = random.createUniformInteger(0, height - ch - 1)();
 
                 std::vector<int> locations((unsigned) cw * ch);
                 std::iota(locations.begin(), locations.end(), 0);
+
+                // random_shuffle should not be used, as it utilized rand()
                 std::random_shuffle(locations.begin(), locations.end());
 
                 for (int i = 0; i < 10; i++) {
@@ -350,18 +356,12 @@ namespace undocked {
                 return std::abs(value1) > std::abs(value2) ? value1 : value2;
             }
 
-            typedef boost::mt19937 RNGType;
-            RNGType rng(time(0));
-
-            double PI = boost::math::constants::pi<double>();
-
-            boost::uniform_real<> sizeDistribution(-0.5, 12);
-            boost::variate_generator<RNGType, boost::uniform_real<> > sizeGen(rng, sizeDistribution);
-
-            boost::uniform_real<> phaseDistribution(-PI, PI);
-            boost::variate_generator<RNGType, boost::uniform_real<> > phaseGen(rng, phaseDistribution);
-
             ClusterSeederV2::AnchorPoint::AnchorPoint(sf::Vector2f location) : location(location) {
+                double PI = boost::math::constants::pi<double>();
+
+                auto sizeGen = random.createUniformDouble(-0.5, 12);
+                auto phaseGen = random.createUniformDouble(-PI, PI);
+
                 for (int i = 0; i < 10; i++) {
                     sizesAndPhases.push_back(std::make_pair(sizeGen(), phaseGen()));
                 }
