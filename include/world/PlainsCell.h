@@ -9,13 +9,15 @@
 #ifndef PE_ECON_SIM_PLAINSCELL_H
 #define PE_ECON_SIM_PLAINSCELL_H
 
-
 #include "world/BoardCell.h"
 
-class PlainsCell : public BoardCell {
-public:
-    PlainsCell();
-};
-
+namespace undocked {
+    namespace world {
+        class PlainsCell : public BoardCell {
+        public:
+            PlainsCell();
+        };
+    }
+}
 
 #endif //PE_ECON_SIM_PLAINSCELL_H

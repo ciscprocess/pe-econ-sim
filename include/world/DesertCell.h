@@ -8,10 +8,13 @@
 
 #include "world/BoardCell.h"
 
-class DesertCell : public BoardCell {
-public:
-    DesertCell();
-};
-
+namespace undocked {
+    namespace world {
+        class DesertCell : public BoardCell {
+        public:
+            DesertCell();
+        };
+    }
+}
 
 #endif //PE_ECON_SIM_DESERTCELL_H

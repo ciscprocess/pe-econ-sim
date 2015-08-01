@@ -9,23 +9,28 @@
 #include "visualization/IsometricSceneVisualizer.h"
 #include "event/GameInteractionEvent.h"
 
-class Game {
-public:
-    Game(sf::RenderTarget* display);
-    bool run();
+namespace undocked {
+    namespace game {
+        using visualization::IsometricSceneVisualizer;
 
-    void nativeEventHandler(sf::Event);
+        class Game {
+        public:
+            Game(sf::RenderTarget* display);
+            bool run();
 
-private:
-    GameState* state;
-    IsometricSceneVisualizer* visualizer;
-    sf::RenderTarget* target;
-    sf::View gameView;
-    sf::Vector2i mouseStart;
-    sf::Vector2i mapStart;
+            void nativeEventHandler(sf::Event);
 
-    bool middleButtonDown = false;
-};
+        private:
+            GameState* state;
+            IsometricSceneVisualizer* visualizer;
+            sf::RenderTarget* target;
+            sf::View gameView;
+            sf::Vector2i mouseStart;
+            sf::Vector2i mapStart;
 
+            bool middleButtonDown = false;
+        };
+    }
+}
 
 #endif //PE_ECON_SIM_GAME_H

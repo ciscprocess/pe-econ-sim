@@ -5,17 +5,23 @@
 #ifndef PE_ECON_SIM_GAMEINTERACTIONEVENT_H
 #define PE_ECON_SIM_GAMEINTERACTIONEVENT_H
 
+namespace undocked {
+namespace event {
 
-class GameInteractionEvent {
-public:
-    GameInteractionEvent() { }
+    class GameInteractionEvent {
+    public:
+        GameInteractionEvent() { }
 
-    enum EventType { UnitSelected, TileSelected, ClickAtCoordinate};
+        enum EventType {
+            UnitSelected, TileSelected, ClickAtCoordinate
+        };
 
-    EventType getEventType() { return type; }
-protected:
-    EventType type;
-};
+        EventType getEventType() { return type; }
 
+    protected:
+        EventType type;
+    };
+}
+}
 
 #endif //PE_ECON_SIM_GAMEINTERACTIONEVENT_H

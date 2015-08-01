@@ -9,22 +9,21 @@
 #include <SFML/System.hpp>
 #include "game/GameState.h"
 
-using sf::Transform;
+namespace undocked {
+    namespace visualization {
+        using sf::Transform;
+        using world::CellularBoard;
 
-class IsometricBoardVisualizer {
-public:
-    IsometricBoardVisualizer(Transform& sux, sf::RenderTarget* target);
-    void draw(CellularBoard* board, sf::Vector2f* input = nullptr);
+        class IsometricBoardVisualizer {
+        public:
+            IsometricBoardVisualizer(Transform& sux, sf::RenderTarget* target);
+            void draw(CellularBoard* board, sf::Vector2f* input = nullptr);
 
-    const sf::FloatRect &getViewport() const {
-        return viewport;
+        private:
+            Transform Sux;
+            sf::RenderTarget* target;
+        };
     }
-
-private:
-    Transform Sux;
-    sf::RenderTarget* target;
-    sf::FloatRect viewport;
-};
-
+}
 
 #endif //PE_ECON_SIM_ISOMETRICBOARDVISUALIZER_H

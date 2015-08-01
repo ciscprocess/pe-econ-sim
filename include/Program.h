@@ -12,21 +12,25 @@
 
 #include "game/Game.h"
 
-class Program {
+namespace undocked {
+    using game::Game;
 
-public:
-    Program(sf::RenderWindow* window);
-    ~Program();
+    class Program {
 
-    bool run();
+    public:
+        Program(sf::RenderWindow* window);
+        ~Program();
 
-private:
-    Game* currentGame;
-    sf::RenderWindow* window;
-    sf::RenderTexture* buffer;
+        bool run();
 
-    void windowResizeHandler(sf::Event event);
-};
+    private:
+        Game* currentGame;
+        sf::RenderWindow* window;
+        sf::RenderTexture* buffer;
 
+        void windowResizeHandler(sf::Event event);
+    };
+
+}
 
 #endif //PE_ECON_SIM_PROGRAM_H

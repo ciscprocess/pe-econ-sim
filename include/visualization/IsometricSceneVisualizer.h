@@ -11,39 +11,44 @@
 
 #include <utility>
 
-using sf::Vector3f;
+
+namespace undocked {
+    namespace visualization {
+        using game::GameState;
+        using game::Unit;
+
+        class IsometricSceneVisualizer {
+        public:
+            IsometricSceneVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis, sf::RenderTarget* target);
+
+            void draw(GameState* state);
+
+            void setInputPosition(sf::Vector2f vec) {
+                inputEnabled = true;
+                inputPosition = vec;
+            };
+
+            void removeInput() { inputEnabled = false; }
+
+            Transform getTransform() { return Sux; }
+
+            std::vector<std::pair<sf::Sprite, Unit*> > sprites;
+
+            Unit* findUnitAtLocation(sf::Vector2f);
+
+        private:
+            sf::Vector2f uBasis, vBasis;
+            Transform Sux;
+            IsometricBoardVisualizer boardVisualizer;
+            sf::RenderTarget* target;
+
+            bool inputEnabled = false;
+            sf::Vector2f inputPosition;
+        };
+    }
+}
+
 using sf::Transform;
-
-class IsometricSceneVisualizer {
-public:
-    IsometricSceneVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis, sf::RenderTarget* target);
-
-    void draw(GameState* state);
-    sf::FloatRect getBounds() { return bounds; }
-
-    void setInputPosition(sf::Vector2f vec) {
-        inputEnabled = true;
-        inputPosition = vec;
-    };
-
-    void removeInput() { inputEnabled = false; }
-
-    Transform getTransform() { return Sux; }
-
-    std::vector<std::pair<sf::Sprite, Unit*> > sprites;
-
-    Unit* findUnitAtLocation(sf::Vector2f);
-
-private:
-    sf::Vector2f uBasis, vBasis;
-    Transform Sux;
-    IsometricBoardVisualizer boardVisualizer;
-    sf::RenderTarget* target;
-    sf::FloatRect bounds;
-
-    bool inputEnabled = false;
-    sf::Vector2f inputPosition;
-};
 
 
 #endif //PE_ECON_SIM_ISOMETRICSCENEVISUALIZER_H

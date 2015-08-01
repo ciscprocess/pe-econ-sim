@@ -7,20 +7,26 @@
 
 #include <functional>
 
+namespace undocked {
+    namespace game {
+        class GameState;
 
-class GameState;
-class GameAction {
-public:
-    GameAction(std::function<bool (GameState*)> tickAction, int turns = -1);
+        class GameAction {
+        public:
+            GameAction(std::function<bool (GameState*)> tickAction, int turns = -1);
 
-    bool tick(GameState* state) {
+            bool tick(GameState* state) {
 
-        return --turns != 0 && tickAction(state);
+                return --turns != 0 && tickAction(state);
+            }
+        private:
+            int turns;
+            std::function<bool (GameState*)> tickAction;
+        };
+
     }
-private:
-    int turns;
-    std::function<bool (GameState*)> tickAction;
-};
+}
+
 
 
 #endif //PE_ECON_SIM_GAMEACTION_H

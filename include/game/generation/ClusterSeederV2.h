@@ -14,30 +14,38 @@
 
 #include "GameStateSeeder.h"
 
-class ClusterSeederV2 : public GameStateSeeder {
-public:
-    ClusterSeederV2();
-    ~ClusterSeederV2();
+namespace undocked {
+    namespace game {
+        namespace generation {
+            class ClusterSeederV2 : public GameStateSeeder {
+            public:
+                ClusterSeederV2();
+                ~ClusterSeederV2();
 
-    virtual void seedTerrain(GameState *state);
-    virtual void seedInfrastructure(GameState *state);
-    virtual void seedUnits(GameState *state);
+                virtual void seedTerrain(GameState *state);
+                virtual void seedInfrastructure(GameState *state);
+                virtual void seedUnits(GameState *state);
 
-    class AnchorPoint {
-    public:
-       AnchorPoint(sf::Vector2f);
-        double getComponent(sf::Vector2f point);
-        sf::Vector2f location;
-    private:
-        std::vector<std::pair<double, double>> sizesAndPhases;
+                class AnchorPoint {
+                public:
+                    AnchorPoint(sf::Vector2f);
+                    double getComponent(sf::Vector2f point);
+                    sf::Vector2f location;
+                private:
+                    std::vector<std::pair<double, double>> sizesAndPhases;
 
-        // the generated polar function for a cluster
-        double func(double theta);
-        // the derivative of the logistic sigmoid
-        double dSigmoid(double x);
+                    // the generated polar function for a cluster
+                    double func(double theta);
+                    // the derivative of the logistic sigmoid
+                    double dSigmoid(double x);
 
-    };
-};
+                };
+            };
+        }
+    }
+}
+
+
 
 
 #endif //PE_ECON_SIM_CLUSTERSEEDERV1_H

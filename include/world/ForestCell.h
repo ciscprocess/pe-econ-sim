@@ -8,10 +8,14 @@
 
 #include "world/BoardCell.h"
 
-class ForestCell : public BoardCell {
-public:
-    ForestCell();
-};
+namespace undocked {
+    namespace world {
+        class ForestCell : public BoardCell {
+        public:
+            ForestCell();
+        };
 
+    }
+}
 
 #endif //PE_ECON_SIM_FORESTCELL_H

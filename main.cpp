@@ -12,6 +12,9 @@
 #include "event/EventManager.h"
 
 int main() {
+    using undocked::event::EventManager;
+    using undocked::Program;
+
     srand((unsigned) time(NULL));
     std::srand ( unsigned ( std::time(0) ) );
 

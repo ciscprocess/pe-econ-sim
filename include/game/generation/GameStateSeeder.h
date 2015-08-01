@@ -8,20 +8,29 @@
 
 #include "game/GameState.h"
 
-class GameState;
-class GameStateSeeder {
-public:
-    virtual void seedTerrain(GameState *state) = 0;
-    virtual void seedInfrastructure(GameState *state) = 0;
-    virtual void seedUnits(GameState *state) = 0;
 
-    virtual void seedAll(GameState *state)
-    {
-        seedTerrain(state);
-        seedInfrastructure(state);
-        seedUnits(state);
+namespace undocked {
+    namespace game {
+        class GameState;
+        namespace generation {
+
+            using game::GameState;
+
+            class GameStateSeeder {
+            public:
+                virtual void seedTerrain(GameState *state) = 0;
+                virtual void seedInfrastructure(GameState *state) = 0;
+                virtual void seedUnits(GameState *state) = 0;
+
+                virtual void seedAll(GameState *state)
+                {
+                    seedTerrain(state);
+                    seedInfrastructure(state);
+                    seedUnits(state);
+                }
+            };
+        }
     }
-};
-
+}
 
 #endif //PE_ECON_SIM_GAMESTATESEEDER_H
