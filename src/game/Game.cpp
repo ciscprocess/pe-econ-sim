@@ -18,7 +18,7 @@ namespace undocked {
 
             auto tickAction = [=] (GameState* state) mutable {
                 sf::Vector2i location = unit->getLocation();
-                std::vector<sf::Vector2i> path = state->getBoard()->calculatePath(unit->getLocation(), end);
+                std::vector<sf::Vector2i> path = state->getBoard()->calculatePath(location, end);
 
                 if (path.size() > 0)
                     unit->setLocation(path[0]);
@@ -32,22 +32,38 @@ namespace undocked {
         }
 
         bool Game::run() {
+            target.clear(sf::Color::Transparent);
             state->tick();
-            visualizer->draw(state);
-            target->setView(gameView);
+
+            visualizer.update(state);
+
+            target.setView(gameView);
+
+            target.draw(boardVisualizer);
+            target.draw(visualizer);
+
+            target.display();
             return false;
         }
 
-        Game::Game(sf::RenderTarget* target) : target(target) {
+        Game::Game(uint32_t width, uint32_t height) :
+                uiManager(width, height),
+                visualizer(sf::Vector2f(20, -10), sf::Vector2f(20, 10)),
+                boardVisualizer(sf::Vector2f(20, -10), sf::Vector2f(20, 10)) {
+
+            target.create(width, height);
+            target.clear(sf::Color::Red);
             ClusterSeederV2 seeder = ClusterSeederV2();
 
-            gameView = sf::View(sf::Vector2f(1888, -100), sf::Vector2f(1024, 768));
-            gameView.zoom(3.5);
-            target->setView(gameView);
+            auto box = uiManager.createMessageBox(100, -250, 200, 200, "I iz caught!?");
+            box->setAnchorPoint(ui::UiElement::anchorPoints["BOTTOM_LEFT"]);
+
+            gameView = sf::View(sf::Vector2f(1888, -100), sf::Vector2f(width, height));
+            gameView.zoom(2.5);
 
             state = new GameState(100, 100, seeder);
-            visualizer = new IsometricSceneVisualizer(sf::Vector2f(20, -10), sf::Vector2f(20, 10), target);
 
+            boardVisualizer.update(state->getBoard());
             auto f = std::bind(&Game::nativeEventHandler, this, std::placeholders::_1);
             EventManager::getInstance()->addListener(f);
         }
@@ -55,12 +71,12 @@ namespace undocked {
         void Game::nativeEventHandler(sf::Event event) {
             // TODO: all this game event logic should be factored out into another, subtyped, class
             if (event.type == sf::Event::MouseMoved) {
-                sf::Vector2f mapCoordinates = target->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
-                visualizer->setInputPosition(mapCoordinates);
+                sf::Vector2f mapCoordinates = target.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+                visualizer.setInputPosition(mapCoordinates);
 
                 if (middleButtonDown) {
-                    int deltaX = (int)std::round((event.mouseMove.x - mouseStart.x) * gameView.getSize().x / target->getSize().x);
-                    int deltaY = (int)std::round((event.mouseMove.y - mouseStart.y) * gameView.getSize().y / target->getSize().y);
+                    int deltaX = (int)std::round((event.mouseMove.x - mouseStart.x) * gameView.getSize().x / target.getSize().x);
+                    int deltaY = (int)std::round((event.mouseMove.y - mouseStart.y) * gameView.getSize().y / target.getSize().y);
                     gameView.setCenter(mapStart.x - deltaX, mapStart.y - deltaY);
                 }
             } else if (event.type == sf::Event::MouseButtonPressed) {
@@ -75,22 +91,22 @@ namespace undocked {
                 } else if (event.mouseButton.button == sf::Mouse::Button::Left) {
                     auto location = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
                     // transforms the screen coordinates of the mouse to the appropriate pixels on the map
-                    sf::Vector2f mapCoordinates = target->mapPixelToCoords(location);
+                    sf::Vector2f mapCoordinates = target.mapPixelToCoords(location);
 
-                    Unit* focusedUnit = visualizer->findUnitAtLocation(mapCoordinates);
+                    Unit* focusedUnit = visualizer.findUnitAtLocation(mapCoordinates);
                     state->selectUnit(focusedUnit);
 
                     // transform the map pixel coordinates to the (u,v) map coordinates
-                    sf::Transform transform = visualizer->getTransform().getInverse();
+                    sf::Transform transform = visualizer.getTransform().getInverse();
                     sf::Vector2f point = transform.transformPoint(mapCoordinates);
 
                     EventManager::getInstance()->pushEvent(ClickAtCoordinate(point));
                 } else if (event.mouseButton.button == sf::Mouse::Button::Right) {
                     auto location = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-                    sf::Vector2f mapCoordinates = target->mapPixelToCoords(location);
+                    sf::Vector2f mapCoordinates = target.mapPixelToCoords(location);
 
                     if (state->selectedUnit) {
-                        sf::Transform transform = visualizer->getTransform().getInverse();
+                        sf::Transform transform = visualizer.getTransform().getInverse();
                         sf::Vector2f point = transform.transformPoint(mapCoordinates);
 
                         // only queue an action if the mouse was pressed within the board
@@ -98,7 +114,7 @@ namespace undocked {
                             point.x < state->getBoard()->getWidth() &&
                             point.y < state->getBoard()->getHeight()) {
 
-                            auto destination = sf::Vector2i((int)point.x, (int)point.y);
+                            sf::Vector2i destination((int)point.x, (int)point.y);
                             GameAction action = generatePathingAction(destination, state->selectedUnit);
 
                             if (event.key.shift) {
@@ -117,9 +133,15 @@ namespace undocked {
                 if (event.mouseWheelScroll.delta > 0) gameView.zoom(0.9);
                 else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.9f);
             } else if (event.type == sf::Event::Resized) {
-                sf::Vector2u size = target->getSize();
+                sf::Vector2u size = target.getSize();
                 gameView = sf::View(gameView.getCenter(), sf::Vector2f(size.x, size.y));
             }
+        }
+
+        void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+            sf::Sprite sprite;
+            sprite.setTexture(this->target.getTexture());
+            target.draw(sprite);
         }
     }
 }

@@ -14,14 +14,18 @@ namespace undocked {
         using sf::Transform;
         using world::CellularBoard;
 
-        class IsometricBoardVisualizer {
+        class IsometricBoardVisualizer : public sf::Drawable {
         public:
-            IsometricBoardVisualizer(Transform& sux, sf::RenderTarget* target);
-            void draw(CellularBoard* board, sf::Vector2f* input = nullptr);
-
+            IsometricBoardVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis);
+            void update(CellularBoard* board);
+            void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         private:
             Transform Sux;
-            sf::RenderTarget* target;
+            sf::RenderTexture target;
+            uint32_t width;
+            uint32_t height;
+
+            sf::Vector2f offset;
         };
     }
 }

@@ -15,7 +15,7 @@
 namespace undocked {
     namespace game {
         namespace generation {
-            numeric::Random random(200);
+            numeric::Random random;
 
             using namespace world;
 

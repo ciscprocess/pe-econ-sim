@@ -10,6 +10,7 @@
 #define PE_ECON_SIM_PROGRAM_H
 
 
+#include <ui/UiManager.h>
 #include "game/Game.h"
 
 namespace undocked {
@@ -18,15 +19,16 @@ namespace undocked {
     class Program {
 
     public:
-        Program(sf::RenderWindow* window);
+        Program(sf::RenderWindow& window);
         ~Program();
 
         bool run();
 
     private:
         Game* currentGame;
-        sf::RenderWindow* window;
-        sf::RenderTexture* buffer;
+        ui::UiManager uiManager;
+        sf::RenderWindow& window;
+        sf::RenderTexture buffer;
 
         void windowResizeHandler(sf::Event event);
     };

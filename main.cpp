@@ -23,7 +23,7 @@ int main() {
 
     EventManager::initialize(&window);
     EventManager* eventManager = EventManager::getInstance();
-    Program simulator(&window);
+    Program simulator(window);
 
     // run the program as long as the window is open
     while (window.isOpen()) {

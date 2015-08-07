@@ -17,11 +17,12 @@ namespace undocked {
         using game::GameState;
         using game::Unit;
 
-        class IsometricSceneVisualizer {
+        class IsometricSceneVisualizer : public sf::Drawable {
         public:
-            IsometricSceneVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis, sf::RenderTarget* target);
+            IsometricSceneVisualizer(sf::Vector2f uBasis, sf::Vector2f vBasis);
 
-            void draw(GameState* state);
+            void update(GameState* state);
+            void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
             void setInputPosition(sf::Vector2f vec) {
                 inputEnabled = true;
@@ -36,11 +37,11 @@ namespace undocked {
 
             Unit* findUnitAtLocation(sf::Vector2f);
 
+            game::GameState* state;
+
         private:
-            sf::Vector2f uBasis, vBasis;
             Transform Sux;
-            IsometricBoardVisualizer boardVisualizer;
-            sf::RenderTarget* target;
+            Transform Sxu;
 
             bool inputEnabled = false;
             sf::Vector2f inputPosition;

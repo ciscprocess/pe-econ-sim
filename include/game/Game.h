@@ -5,6 +5,7 @@
 #ifndef PE_ECON_SIM_GAME_H
 #define PE_ECON_SIM_GAME_H
 
+#include <ui/UiManager.h>
 #include "game/GameState.h"
 #include "visualization/IsometricSceneVisualizer.h"
 #include "event/GameInteractionEvent.h"
@@ -12,21 +13,27 @@
 namespace undocked {
     namespace game {
         using visualization::IsometricSceneVisualizer;
+        using visualization::IsometricBoardVisualizer;
 
-        class Game {
+        class Game : public sf::Drawable {
         public:
-            Game(sf::RenderTarget* display);
+            Game(uint32_t width, uint32_t height);
+
             bool run();
+
+            virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
             void nativeEventHandler(sf::Event);
 
         private:
             GameState* state;
-            IsometricSceneVisualizer* visualizer;
-            sf::RenderTarget* target;
+            IsometricSceneVisualizer visualizer;
+            IsometricBoardVisualizer boardVisualizer;
+            sf::RenderTexture target;
             sf::View gameView;
             sf::Vector2i mouseStart;
             sf::Vector2i mapStart;
+            ui::UiManager uiManager;
 
             bool middleButtonDown = false;
         };

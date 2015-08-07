@@ -5,44 +5,46 @@ namespace undocked {
     using event::EventManager;
 
     // constructs an application around a given window
-    Program::Program(sf::RenderWindow* window) : window(window) {
-        buffer = new sf::RenderTexture();
-        buffer->create(window->getSize().x, window->getSize().y);
+    Program::Program(sf::RenderWindow& window) : window(window), uiManager(window.getSize().x, window.getSize().y) {
+        sf::Vector2u size = window.getSize();
+        buffer.create(size.x, size.y);
 
-        buffer->clear(sf::Color::Blue);
-
+        buffer.clear(sf::Color::Blue);
 
         std::function<void (sf::Event)> handler = std::bind(&Program::windowResizeHandler, this, std::placeholders::_1);
         EventManager::getInstance()->addListener(handler);
 
-        currentGame = new Game(buffer);
 
+        currentGame = new Game(size.x, size.y);
     }
 
     Program::~Program() {
         delete currentGame;
     }
 
-// updates rendering objects for resized window
+    // updates rendering objects for resized window
     void Program::windowResizeHandler(sf::Event event) {
         if (event.type == sf::Event::Resized) {
-            window->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
-            buffer->create(event.size.width, event.size.height);
-            buffer->clear(sf::Color::Blue);
+            window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+            buffer.create(event.size.width, event.size.height);
+            buffer.clear(sf::Color::Blue);
+            uiManager.updateSize(event.size.width, event.size.height);
         }
     }
 
-// executes all tasks needed for the current time-limited tick
+    // executes all tasks needed for the current time-limited tick
     bool Program::run() {
-        buffer->clear(sf::Color::Blue);
-        window->clear(sf::Color::Blue);
-        sf::Vector2u size = buffer->getSize();
+        buffer.clear(sf::Color::Blue);
+        window.clear(sf::Color::Blue);
+
         currentGame->run();
-        buffer->display();
-        const sf::Texture& texture = buffer->getTexture();
+        buffer.draw(*currentGame);
+        buffer.display();
+
+        const sf::Texture& texture = buffer.getTexture();
         sf::Sprite sprite(texture);
         sprite.setPosition(0, 0);
-        window->draw(sprite);
+        window.draw(sprite);
 
         return true;
     }
