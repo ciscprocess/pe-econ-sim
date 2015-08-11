@@ -14,16 +14,15 @@ namespace undocked {
         using event::EventManager;
         using event::ClickAtCoordinate;
 
-        GameAction generatePathingAction( sf::Vector2i end, Unit* unit, int speed = 1) {
-
+        GameAction generatePathingAction( sf::Vector2i end, Unit* unit, GameState* inState, int speed = 1) {
+            sf::Vector2i location = unit->getLocation();
+            std::vector<sf::Vector2i> path = inState->getBoard()->calculatePath(location, end);
+            uint32_t i = 0;
             auto tickAction = [=] (GameState* state) mutable {
-                sf::Vector2i location = unit->getLocation();
-                std::vector<sf::Vector2i> path = state->getBoard()->calculatePath(location, end);
+                if (i < path.size())
+                    unit->setLocation(path[i]);
 
-                if (path.size() > 0)
-                    unit->setLocation(path[0]);
-
-                return path.size() > 0;
+                return ++i < path.size();
             };
 
             GameAction action(tickAction);
@@ -33,16 +32,16 @@ namespace undocked {
 
         bool Game::run() {
             target.clear(sf::Color::Transparent);
+            uiTarget.clear(sf::Color::Transparent);
             state->tick();
 
             visualizer.update(state);
 
-            target.setView(gameView);
-
             target.draw(boardVisualizer);
             target.draw(visualizer);
-
+            uiTarget.draw(uiManager);
             target.display();
+            uiTarget.display();
             return false;
         }
 
@@ -53,15 +52,19 @@ namespace undocked {
 
             target.create(width, height);
             target.clear(sf::Color::Red);
+            uiTarget.create(width, height);
+            uiTarget.clear(sf::Color::Transparent);
+
             ClusterSeederV2 seeder = ClusterSeederV2();
 
-            auto box = uiManager.createMessageBox(100, -250, 200, 200, "I iz caught!?");
-            box->setAnchorPoint(ui::UiElement::anchorPoints["BOTTOM_LEFT"]);
+            box = (ui::MessageBox*) uiManager.createMessageBox(0, -149, 400, 150, "Select a Unit");
+            auto f2 = ui::UiElement::anchorPoints["BOTTOM_LEFT"];
+            box->setAnchorPoint(f2);
 
             gameView = sf::View(sf::Vector2f(1888, -100), sf::Vector2f(width, height));
             gameView.zoom(2.5);
 
-            state = new GameState(100, 100, seeder);
+            state = new GameState(75, 75, seeder);
 
             boardVisualizer.update(state->getBoard());
             auto f = std::bind(&Game::nativeEventHandler, this, std::placeholders::_1);
@@ -78,6 +81,7 @@ namespace undocked {
                     int deltaX = (int)std::round((event.mouseMove.x - mouseStart.x) * gameView.getSize().x / target.getSize().x);
                     int deltaY = (int)std::round((event.mouseMove.y - mouseStart.y) * gameView.getSize().y / target.getSize().y);
                     gameView.setCenter(mapStart.x - deltaX, mapStart.y - deltaY);
+                    target.setView(gameView);
                 }
             } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Button::Middle) {
@@ -95,6 +99,18 @@ namespace undocked {
 
                     Unit* focusedUnit = visualizer.findUnitAtLocation(mapCoordinates);
                     state->selectUnit(focusedUnit);
+
+                    if (focusedUnit) {
+                        std::stringstream stringstream;
+                        stringstream << "Selected Unit at: (" << focusedUnit->getLocation().x
+                        << ", " << focusedUnit->getLocation().y << ")" << std::endl;
+                        stringstream << "Health: " << focusedUnit->getHealth() << std::endl;
+                        stringstream << "Age: " << focusedUnit->getAge() << std::endl;
+                        stringstream << "Death Chance: " << focusedUnit->deathChance() << std::endl;
+                        box->setMessage(stringstream.str());
+                    } else {
+                        box->setMessage("Select a Unit");
+                    }
 
                     // transform the map pixel coordinates to the (u,v) map coordinates
                     sf::Transform transform = visualizer.getTransform().getInverse();
@@ -115,7 +131,7 @@ namespace undocked {
                             point.y < state->getBoard()->getHeight()) {
 
                             sf::Vector2i destination((int)point.x, (int)point.y);
-                            GameAction action = generatePathingAction(destination, state->selectedUnit);
+                            GameAction action = generatePathingAction(destination, state->selectedUnit, state);
 
                             if (event.key.shift) {
                                 state->queueAction(action, state->selectedUnit);
@@ -130,17 +146,26 @@ namespace undocked {
                     middleButtonDown = false;
                 }
             } else if (event.type == sf::Event::MouseWheelScrolled) {
-                if (event.mouseWheelScroll.delta > 0) gameView.zoom(0.9);
-                else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.9f);
+                if (event.mouseWheelScroll.delta > 0) gameView.zoom(0.75);
+                else if (event.mouseWheelScroll.delta < 0) gameView.zoom(1 / 0.75f);
+
+                target.setView(gameView);
             } else if (event.type == sf::Event::Resized) {
+                target.create(event.size.width, event.size.height);
+                uiTarget.create(event.size.width, event.size.height);
+                uiManager.updateSize(event.size.width, event.size.height);
+
                 sf::Vector2u size = target.getSize();
                 gameView = sf::View(gameView.getCenter(), sf::Vector2f(size.x, size.y));
+                target.setView(gameView);
             }
         }
 
         void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const {
             sf::Sprite sprite;
             sprite.setTexture(this->target.getTexture());
+            target.draw(sprite);
+            sprite.setTexture(uiTarget.getTexture());
             target.draw(sprite);
         }
     }

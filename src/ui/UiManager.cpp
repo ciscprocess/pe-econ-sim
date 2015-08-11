@@ -8,8 +8,6 @@
 namespace undocked {
     namespace ui {
         UiManager::UiManager(int width, int height) : UiElement(nullptr, 0, 0, width, height) {
-            buffer.create(width, height);
-            buffer.clear(sf::Color::Transparent);
         }
 
         UiManager::~UiManager() {
@@ -19,9 +17,9 @@ namespace undocked {
             }
         }
 
-        void UiManager::draw(sf::RenderTarget& target) {
+        void UiManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
             for (auto element : elements) {
-                element->draw(target);
+                target.draw(*element);
             }
         }
 

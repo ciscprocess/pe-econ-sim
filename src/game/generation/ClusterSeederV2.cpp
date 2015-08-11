@@ -15,7 +15,7 @@
 namespace undocked {
     namespace game {
         namespace generation {
-            numeric::Random random;
+            numeric::Random random(10);
 
             using namespace world;
 
@@ -28,6 +28,7 @@ namespace undocked {
             }
 
             void ClusterSeederV2::seedTerrain(GameState *state) {
+                std::cout << "Seeding terrain!" << std::endl;
                 CellularBoard *board = state->getBoard();
                 int width = board->getWidth(), height = board->getHeight();
 
@@ -101,6 +102,7 @@ namespace undocked {
                     }
                 }
 
+                std::cout << "Calculating Anchor points!" << std::endl;
                 for (int v = 0; v < height; v++) {
                     for (int u = 0; u < width; u++) {
                         AnchorPoint *closest = nullptr;
@@ -134,10 +136,12 @@ namespace undocked {
                 }
 
 
+                std::cout << "Propagating terrain..." << std::endl;
                 // propagate the desert and forest terrains
                 int iterations = (int) ceil((sqrt(width * height) / 40) * 6) * 3;
                 int ruleSet = 0;
                 for (int iteration = 0; iteration < iterations; iteration++) {
+                    std::cout << "\tIteration " << iteration << " / " << iterations - 1 << std::endl;
                     boost::multi_array<std::pair<int, int>, 2> neighbors(boost::extents[height][width]);
 
                     for (int v = 0; v < height; v++) {

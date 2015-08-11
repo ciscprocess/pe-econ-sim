@@ -15,13 +15,10 @@ namespace undocked {
         public:
             UiManager(int width, int height);
             ~UiManager();
-            void draw(sf::RenderTarget&);
+            void draw(sf::RenderTarget&, sf::RenderStates states) const;
             void addElement(UiElement*);
             UiElement* createMessageBox(int x, int y, int w, int h, std::string message);
             void updateSize(int width, int height);
-
-        private:
-            sf::RenderTexture buffer;
         };
     }
 }

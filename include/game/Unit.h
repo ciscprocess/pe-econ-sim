@@ -20,11 +20,28 @@ namespace undocked {
             sf::Vector2f getOffset() { return offset; }
             void setLocation(sf::Vector2i location) { this->location = location; }
             sf::Texture* getTexture() { return baseTexture; }
+            virtual double deathChance() = 0;
+            uint32_t getHealth() const {
+                return health;
+            }
+
+            uint32_t getAge() const {
+                return age;
+            }
+
+            void tick() {
+                age++;
+                health--;
+            };
         protected:
             UnitType type;
             sf::Texture* baseTexture;
             sf::Vector2i location;
             sf::Vector2f offset;
+
+        protected:
+            uint32_t health = 0;
+            uint32_t age = 0;
         };
     }
 }

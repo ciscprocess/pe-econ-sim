@@ -10,7 +10,7 @@
 
 namespace undocked {
     namespace ui {
-        void MessageBox::draw(sf::RenderTarget &target) {
+        void MessageBox::draw(sf::RenderTarget &target, sf::RenderStates states) const {
             sf::RectangleShape shape(sf::Vector2f(area.width, area.height));
             sf::Vector2i position = sf::Vector2i(area.left, area.top) + anchorPoint(this);
             shape.setPosition(position.x, position.y);

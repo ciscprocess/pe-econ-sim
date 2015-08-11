@@ -2,11 +2,13 @@
 // Created by Nathan on 7/10/2015.
 //
 
+#include <numeric/Random.h>
 #include "game/GameState.h"
 
 namespace undocked {
     namespace game {
         using world::CellularBoard;
+        extern numeric::Random random;
         void GameState::tick() {
             for (std::map<void*, GameActionQueue>::iterator i = actions.begin(); i != actions.end(); i++) {
                 GameActionQueue& action = i->second;
@@ -15,8 +17,19 @@ namespace undocked {
                     if (actions.size() < 1)
                         break;
                 }
+            }
 
+            for (auto i = units.begin(); i != units.end(); i++) {
+                auto unit = *i;
+                unit->tick();
+                auto chance = unit->deathChance();
+                auto roll = random.get();
 
+                if (chance > roll) {
+                    units.erase(i--);
+                    if (units.size() < 1)
+                        break;
+                }
             }
         }
 

@@ -12,6 +12,8 @@ namespace undocked {
         class Civilian : public Unit {
         public:
             Civilian();
+
+            virtual double deathChance();
         };
     }
 }

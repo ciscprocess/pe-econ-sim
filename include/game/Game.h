@@ -6,6 +6,7 @@
 #define PE_ECON_SIM_GAME_H
 
 #include <ui/UiManager.h>
+#include <ui/MessageBox.h>
 #include "game/GameState.h"
 #include "visualization/IsometricSceneVisualizer.h"
 #include "event/GameInteractionEvent.h"
@@ -30,10 +31,12 @@ namespace undocked {
             IsometricSceneVisualizer visualizer;
             IsometricBoardVisualizer boardVisualizer;
             sf::RenderTexture target;
+            sf::RenderTexture uiTarget;
             sf::View gameView;
             sf::Vector2i mouseStart;
             sf::Vector2i mapStart;
             ui::UiManager uiManager;
+            ui::MessageBox* box;
 
             bool middleButtonDown = false;
         };

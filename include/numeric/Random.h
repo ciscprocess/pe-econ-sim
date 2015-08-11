@@ -28,6 +28,10 @@ namespace undocked {
                 return [=]() { return gen(rng); };
             }
 
+            const boost::mt19937 &getRng() const {
+                return rng;
+            }
+
         private:
             boost::random::mt19937 rng;
             boost::random::uniform_int_distribution<int> uniform;
